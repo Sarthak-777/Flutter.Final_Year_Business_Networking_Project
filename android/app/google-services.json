@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "495278392973",
+    "project_id": "business-networking-system",
+    "storage_bucket": "business-networking-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495278392973:android:2ea286ff364d485daf84c4",
+        "android_client_info": {
+          "package_name": "com.example.final_project_workconnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "495278392973-02cpeve9e4nn41blrmcvd6i71sp9iuno.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.final_project_workconnect",
+            "certificate_hash": "52cf26b6393609c896dc7b0f9f9f24c528172085"
+          }
+        },
+        {
+          "client_id": "495278392973-eclu4kuko691p1ahjqku5da17s3s57nv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiqCtYECzX8Sf9akZp6GW7MnOJ9yGFaMo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "495278392973-eclu4kuko691p1ahjqku5da17s3s57nv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
