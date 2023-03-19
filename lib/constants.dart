@@ -1,3 +1,5 @@
+import 'package:final_project_workconnect/view/screens/profile_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -63,11 +65,11 @@ class TabBarClass {
 }
 
 List<Widget> homeScreenItems = [
-  const Center(child: Text('Home')),
-  const Center(child: Text('Search')),
-  const Center(child: Text('Post')),
-  const Center(child: Text('Jobs')),
-  const Center(child: Text('Profile')),
+  Text('Home'),
+  Text('Search'),
+  Text('Post'),
+  Text('Jobs'),
+  ProfileScreen(uid: FirebaseAuth.instance.currentUser?.uid),
 ];
 
 bool iconBool = false;

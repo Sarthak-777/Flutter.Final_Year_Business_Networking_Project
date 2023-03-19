@@ -11,22 +11,15 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> {
   String _username = '';
-  TabController? _tabController;
-  late PageController pageController;
-  int _page = 0;
+  int pageIdx = 0;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _tabController = TabController(
-        length: TabBarClass().tabBarFunc().length,
-        initialIndex: 0,
-        vsync: this);
-    pageController = PageController();
+
     usernameFunc();
   }
 
@@ -37,70 +30,108 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
-  void navigationTap(page) {
-    pageController.jumpToPage(page);
-  }
-
-  void onPageChanged(int page) {
-    print(page);
-    setState(() {
-      _page = page;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Hello, $_username',
-            style: TextStyle(color: iconBool ? Colors.white : kPrimaryColor),
-          ),
-          elevation: 0,
-          bottom: TabBar(
-            controller: _tabController,
-            indicatorColor: iconBool ? Colors.white : kPrimaryColor,
-            tabs: TabBarClass().tabBarFunc(_page),
-            onTap: navigationTap,
-          ),
-          actions: [
-            IconButton(
-              color: iconBool ? Colors.white : kPrimaryColor,
-              onPressed: () {
-                setState(() {
-                  iconBool = !iconBool;
-                });
-                if (iconBool == true) {
-                  Get.changeTheme(darkTheme);
-                } else {
-                  Get.changeTheme(lightTheme);
-                }
-              },
-              icon: Icon(
-                iconBool ? iconDark : iconLight,
-              ),
-            ),
-            InkWell(
-              onTap: () {},
-              child: CircleAvatar(
-                backgroundColor: Colors.grey.shade200,
-                radius: 20,
-                child: const Icon(
-                  Icons.message,
-                  color: kPrimaryColor,
-                  size: 25.0,
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 8.0,
-            ),
+      // appBar:
+      //     AppBar(elevation: 0, backgroundColor: Colors.transparent, actions: [
+      //   IconButton(
+      //     color: iconBool ? Colors.white : kPrimaryColor,
+      //     onPressed: () {
+      //       setState(() {
+      //         iconBool = !iconBool;
+      //       });
+      //       if (iconBool == true) {
+      //         Get.changeTheme(darkTheme);
+      //       } else {
+      //         Get.changeTheme(lightTheme);
+      //       }
+      //     },
+      //     icon: Icon(
+      //       iconBool ? iconDark : iconLight,
+      //     ),
+      //   ),
+      //   InkWell(
+      //     onTap: () {},
+      //     child: CircleAvatar(
+      //       backgroundColor: Colors.grey.shade200,
+      //       radius: 20,
+      //       child: const Icon(
+      //         Icons.message,
+      //         color: kPrimaryColor,
+      //         size: 25.0,
+      //       ),
+      //     ),
+      //   ),
+      //   const SizedBox(
+      //     width: 8.0,
+      //   ),
+      // ]),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+          boxShadow: [
+            BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
           ],
         ),
-        body: PageView(
-          children: homeScreenItems,
-          controller: pageController,
-          onPageChanged: onPageChanged,
-        ));
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0),
+          ),
+          child: BottomNavigationBar(
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: iconBool ? Colors.blueGrey[800] : mainColor,
+            onTap: (index) {
+              setState(() {
+                pageIdx = index;
+              });
+            },
+            currentIndex: pageIdx,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(
+                  pageIdx == 0 ? Icons.home : Icons.home_outlined,
+                  color: iconBool ? Colors.white : kPrimaryColor,
+                ),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    pageIdx == 1 ? Icons.search : Icons.search_outlined,
+                    color: iconBool ? Colors.white : kPrimaryColor,
+                  ),
+                  label: 'Search'),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  pageIdx == 2 ? Icons.add : Icons.add_outlined,
+                  color: iconBool ? Colors.white : kPrimaryColor,
+                ),
+                label: 'Post',
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    pageIdx == 3
+                        ? Icons.work_history
+                        : Icons.work_history_outlined,
+                    color: iconBool ? Colors.white : kPrimaryColor,
+                  ),
+                  label: 'Jobs'),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  pageIdx == 4 ? Icons.person : Icons.person_outline,
+                  color: iconBool ? Colors.white : kPrimaryColor,
+                ),
+                label: 'Profile',
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: Center(child: homeScreenItems[pageIdx]),
+    );
   }
 }

@@ -26,6 +26,7 @@ class AuthController extends GetxController {
   }
 
   _setInitialView(User? user) {
+    print(user);
     if (user == null) {
       Get.offAll(() => LoginScreen());
     } else {
@@ -122,7 +123,7 @@ class AuthController extends GetxController {
       if (email.isNotEmpty && password.isNotEmpty) {
         await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
-        Get.off(() => HomeScreen());
+        Get.offAll(() => HomeScreen());
       } else {
         Get.snackbar("Error", "Fill both the forms below");
       }

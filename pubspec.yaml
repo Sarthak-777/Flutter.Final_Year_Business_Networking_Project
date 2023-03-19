@@ -36,6 +36,7 @@ dependencies:
     sdk: flutter
   get: ^4.6.5
   google_sign_in: ^6.0.2
+  image_picker: 0.8.6+3
 
 dev_dependencies:
   flutter_lints: ^2.0.0
@@ -52,3 +53,4 @@ flutter:
     - assets/google-icon.png
     - assets/login-splash.png
     - assets/email_icon.png
+    - assets/person.jpg

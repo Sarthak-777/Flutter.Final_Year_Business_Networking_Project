@@ -2,6 +2,7 @@ import 'package:final_project_workconnect/constants.dart';
 import 'package:final_project_workconnect/controller/auth_controller.dart';
 import 'package:final_project_workconnect/view/screens/auth/login_screen.dart';
 import 'package:final_project_workconnect/view/screens/auth/register_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +27,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print(iconBool);
     return GetMaterialApp(
       title: 'Flutter Demo',
       theme: lightTheme,
