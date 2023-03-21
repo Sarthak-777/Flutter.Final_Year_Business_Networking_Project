@@ -3,13 +3,14 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 
 class DividerWidget extends StatelessWidget {
-  const DividerWidget({Key? key}) : super(key: key);
+  String text;
+  DividerWidget({Key? key, this.text = 'OR'}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: const [
-        Expanded(
+      children: [
+        const Expanded(
           child: Divider(
             indent: 10,
             endIndent: 10,
@@ -17,10 +18,10 @@ class DividerWidget extends StatelessWidget {
           ),
         ),
         Text(
-          'OR',
+          text,
           style: TextStyle(color: Colors.blueGrey),
         ),
-        Expanded(
+        const Expanded(
           child: Divider(
             indent: 10,
             endIndent: 10,

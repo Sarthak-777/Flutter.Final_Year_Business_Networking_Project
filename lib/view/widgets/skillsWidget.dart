@@ -1,4 +1,6 @@
+import 'package:final_project_workconnect/view/screens/skills_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class skillsWidget extends StatelessWidget {
   const skillsWidget({
@@ -12,7 +14,9 @@ class skillsWidget extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10.0),
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Get.to(() => SkillsScreen());
+          },
           child: Container(
             color: Colors.white,
             height: 100,

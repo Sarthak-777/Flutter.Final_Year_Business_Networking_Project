@@ -26,6 +26,8 @@ class ProfileController extends GetxController {
     String jobCategory = userDoc['jobCategory'];
     String profilePhoto = userDoc['profilePhoto'];
     String country = userDoc['country'];
+    String city = userDoc['city'];
+
     int followers = 0;
     int following = 0;
     _user.value = {
@@ -34,7 +36,8 @@ class ProfileController extends GetxController {
       'profilePhoto': profilePhoto,
       'username': username,
       'country': country,
-      'jobCategory': jobCategory
+      'jobCategory': jobCategory,
+      'city': city,
     };
 
     update();
@@ -66,5 +69,15 @@ class ProfileController extends GetxController {
     } catch (e) {
       Get.snackbar('Error', res);
     }
+  }
+
+  Future<String?> getUserImage(String? uid) async {
+    var userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    var userData = userDoc.data();
+    print(userData);
+    String userImage = userDoc['profilePhoto'];
+    print(userImage);
+    return userImage;
   }
 }

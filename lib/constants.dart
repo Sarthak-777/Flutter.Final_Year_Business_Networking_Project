@@ -77,7 +77,7 @@ IconData iconLight = Icons.wb_sunny;
 IconData iconDark = Icons.nights_stay;
 ThemeData lightTheme = ThemeData(
   colorScheme: ColorScheme.fromSwatch().copyWith(
-    primary: Colors.blueGrey[100],
+    primary: Colors.blueGrey[900],
     secondary: Colors.blueGrey,
   ),
 

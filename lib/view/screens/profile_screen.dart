@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +6,8 @@ import 'package:final_project_workconnect/constants.dart';
 import 'package:final_project_workconnect/controller/profile_controller.dart';
 import 'package:final_project_workconnect/functions/getAsync.dart';
 import 'package:final_project_workconnect/functions/pickImage.dart';
+import 'package:final_project_workconnect/view/screens/edit_profile_screen.dart';
+import 'package:final_project_workconnect/view/screens/photo_view_screen.dart';
 import 'package:final_project_workconnect/view/widgets/descriptionTextWidget.dart';
 import 'package:final_project_workconnect/view/widgets/experienceWidget.dart';
 import 'package:final_project_workconnect/view/widgets/skillsWidget.dart';
@@ -35,9 +38,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(profileController.user['username']);
-    var user = profileController.user;
-
     Uint8List? _file;
 
     return GetBuilder<ProfileController>(
@@ -46,13 +46,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
           : Scaffold(
               backgroundColor: Colors.blueGrey[50],
               appBar: AppBar(
-                backgroundColor: Colors.blueGrey[900],
+                backgroundColor: Colors.red[900],
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(
                     bottom: Radius.circular(30),
                     top: Radius.circular(30),
                   ),
                 ),
+                actions: [
+                  InkWell(
+                    onTap: () => FirebaseAuth.instance.signOut(),
+                    child: Icon(
+                      Icons.logout_outlined,
+                      color: Colors.blueGrey[100],
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                ],
                 toolbarHeight: 220,
                 flexibleSpace: Container(
                     child: Column(
@@ -60,14 +70,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(50),
                       child: InkWell(
                         onTap: () {
                           Get.bottomSheet(
                             ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: Container(
-                                height: 160,
+                                height: 200,
                                 color: Colors.white,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -84,9 +94,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           profileController.uploadImage(file!);
                                         }
                                       },
-                                      child: Text(
-                                        "Upload from Camera,",
-                                        style: TextStyle(color: Colors.black),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Text(
+                                          "Upload from Camera,",
+                                          style: TextStyle(color: Colors.black),
+                                        ),
                                       ),
                                       style: TextButton.styleFrom(
                                           textStyle: const TextStyle(
@@ -107,9 +122,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           profileController.uploadImage(file!);
                                         }
                                       },
-                                      child: Text(
-                                        "Upload from Gallery,",
-                                        style: TextStyle(color: Colors.black),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Text(
+                                          "Upload from Gallery,",
+                                          style: TextStyle(color: Colors.black),
+                                        ),
                                       ),
                                       style: TextButton.styleFrom(
                                           textStyle: const TextStyle(
@@ -120,11 +140,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     TextButton(
                                       onPressed: () {
+                                        Get.to(() => PhotoViewScreen(
+                                            image:
+                                                controller.user['profilePhoto'],
+                                            uid: widget.uid));
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Text(
+                                          "View Image",
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                          textStyle: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      )),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text(
-                                        "X Cancel",
-                                        style: TextStyle(color: Colors.red),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Text(
+                                          "X Cancel",
+                                          style: TextStyle(color: Colors.red),
+                                        ),
                                       ),
                                       style: TextButton.styleFrom(
                                           textStyle: const TextStyle(
@@ -139,35 +186,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           );
                         },
-                        child: Container(
-                          height: 70,
-                          width: 70,
-                          child: StreamBuilder(
-                            stream: FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(FirebaseAuth.instance.currentUser!.uid)
-                                .snapshots(),
-                            builder:
-                                (BuildContext context, AsyncSnapshot snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                              print(snapshot.data);
-                              return Image.network(
-                                  snapshot.data.data()['profilePhoto']);
-                            },
-                          ),
-                        ),
+                        child: ProfilePictureWidget(uid: widget.uid),
                       ),
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     Text(
-                      "username",
+                      controller.user['username'],
                       style: TextStyle(
                         fontSize: 24,
                         color: Colors.blueGrey[100],
@@ -178,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: 6,
                     ),
                     Text(
-                      "Description",
+                      controller.user['jobCategory'],
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.blueGrey[100],
@@ -198,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(width: 3),
                         Text(
-                          "Location",
+                          "${controller.user['city']}, ${controller.user['country']}",
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.blueGrey[100],
@@ -208,7 +234,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 5),
-                    Icon(Icons.settings, size: 16, color: Colors.blueGrey[100])
+                    InkWell(
+                        onTap: () {
+                          Get.to(
+                            () => EditProfileScreen(),
+                          );
+                        },
+                        child: Icon(Icons.settings,
+                            size: 16, color: Colors.blueGrey[100]))
                   ],
                 )),
               ),
@@ -260,11 +293,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               scrollDirection: Axis.horizontal,
                               children: [
                                 skillsWidget(),
-                                skillsWidget(),
-                                skillsWidget(),
-                                skillsWidget(),
-                                skillsWidget(),
-                                skillsWidget(),
                               ],
                             ),
                           ),
@@ -305,6 +333,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               )),
             ),
+    );
+  }
+}
+
+class ProfilePictureWidget extends StatelessWidget {
+  String? uid;
+
+  ProfilePictureWidget({
+    super.key,
+    required this.uid,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 80,
+      width: 80,
+      child: StreamBuilder(
+        stream:
+            FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return Image.network(
+            snapshot.data.data()['profilePhoto'],
+            fit: BoxFit.fitWidth,
+          );
+        },
+      ),
     );
   }
 }
