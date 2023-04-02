@@ -2,6 +2,7 @@ import 'package:final_project_workconnect/controller/skills_controller.dart';
 import 'package:final_project_workconnect/functions/skillsApi.dart';
 import 'package:final_project_workconnect/view/widgets/dividerWidget.dart';
 import 'package:final_project_workconnect/view/widgets/textInputWidget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -18,6 +19,7 @@ class _SkillsScreenState extends State<SkillsScreen> {
   final TextEditingController _skillController = TextEditingController();
 
   SkillController skillController = Get.put(SkillController());
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,11 @@ class _SkillsScreenState extends State<SkillsScreen> {
         backgroundColor: Colors.blueGrey[900],
       ),
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {}, label: Text("Complete")),
+          onPressed: () {
+            skillController.storeSkillsToFirestore(skillController.userSkills,
+                FirebaseAuth.instance.currentUser!.uid);
+          },
+          label: Text("Complete")),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -43,6 +49,7 @@ class _SkillsScreenState extends State<SkillsScreen> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
+                isLoading = true;
                 List data =
                     await skillController.apicall(_skillController.text);
                 skillController.setSkillData();
@@ -131,7 +138,9 @@ class _SkillsScreenState extends State<SkillsScreen> {
                       ),
                     ),
                   )
-                : SizedBox()),
+                : isLoading == true
+                    ? CircularProgressIndicator()
+                    : SizedBox()),
           ],
         ),
       ),

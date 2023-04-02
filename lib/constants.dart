@@ -1,4 +1,8 @@
-import 'package:final_project_workconnect/view/screens/profile_screen.dart';
+import 'package:final_project_workconnect/view/screens/business/business_home_screen.dart';
+import 'package:final_project_workconnect/view/screens/business/business_profile_screen.dart';
+import 'package:final_project_workconnect/view/screens/user/home_screen.dart';
+import 'package:final_project_workconnect/view/screens/user/post_screen.dart';
+import 'package:final_project_workconnect/view/screens/user/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +19,7 @@ List<String> category = [
   'Student'
 ];
 
+List themeData = ['red', 'blue', 'green', 'black'];
 var mainColor = Colors.blueGrey[100];
 
 const kPrimaryColor = Colors.blueGrey;
@@ -64,26 +69,36 @@ class TabBarClass {
   }
 }
 
+const kBgMainColor = Color.fromARGB(255, 255, 241, 246);
+
 List<Widget> homeScreenItems = [
-  Text('Home'),
+  HomeScreen(),
   Text('Search'),
-  Text('Post'),
+  PostScreen(),
   Text('Jobs'),
-  ProfileScreen(uid: FirebaseAuth.instance.currentUser?.uid),
+  ProfileScreen(uid: ''),
+];
+
+List<Widget> businessScreenItems = [
+  BusinessHomeScreen(),
+  Text('Search'),
+  PostScreen(),
+  BusinessProfileScreen(uid: ''),
 ];
 
 bool iconBool = false;
 IconData iconLight = Icons.wb_sunny;
 IconData iconDark = Icons.nights_stay;
 ThemeData lightTheme = ThemeData(
-  colorScheme: ColorScheme.fromSwatch().copyWith(
-    primary: Colors.blueGrey[900],
-    secondary: Colors.blueGrey,
-  ),
-
+  primaryColor: Colors.grey[100],
+  primaryColorLight: Colors.grey[100],
   primaryColorDark: Colors.black,
-  canvasColor: Colors.white,
-  // brightness: Brightness.light,
+  brightness: Brightness.light,
+  canvasColor: Colors.grey[200],
+  indicatorColor: Colors.black,
+  appBarTheme: AppBarTheme(
+    color: Colors.blueGrey[900],
+  ),
 );
 
 ThemeData darkTheme = ThemeData(
@@ -93,5 +108,21 @@ ThemeData darkTheme = ThemeData(
     primaryColorDark: Colors.black,
     indicatorColor: Colors.white,
     canvasColor: Colors.black,
+
     // next line is important!
     appBarTheme: AppBarTheme(brightness: Brightness.dark));
+
+List<String> JobIndustry = [
+  'Advertising Agency',
+  'Architecture',
+  'Banks',
+  'Insurance',
+  'Technology',
+  'E-Commerce',
+  'Information/Compute/Technology',
+  'Clinic/Hospital',
+  'ISP',
+  'Teaching Industry',
+  'Repair Services',
+  'Software Companies'
+];

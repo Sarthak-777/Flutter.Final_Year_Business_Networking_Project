@@ -1,3 +1,5 @@
+import 'package:final_project_workconnect/constants.dart';
+import 'package:final_project_workconnect/functions/getAllPosts.dart';
 import 'package:flutter/material.dart';
 
 class ExperienceWidget extends StatelessWidget {
@@ -23,23 +25,25 @@ class ExperienceWidget extends StatelessWidget {
         child: InkWell(
             onTap: () {},
             child: date == ''
-                ? Container(
-                    color: Colors.white,
-                    height: 90,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add,
-                          size: 30,
-                        )
-                      ],
+                ? InkWell(
+                    onTap: () {},
+                    child: Container(
+                      color: iconBool ? Colors.blueGrey[800] : Colors.white,
+                      height: 90,
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add,
+                              size: 30,
+                              color: iconBool ? Colors.grey[200] : Colors.black)
+                        ],
+                      ),
                     ),
                   )
                 : Container(
-                    color: Colors.white,
+                    color: iconBool ? Colors.blueGrey[800] : Colors.white,
                     height: 90,
                     width: MediaQuery.of(context).size.width,
                     child: Row(
@@ -72,14 +76,18 @@ class ExperienceWidget extends StatelessWidget {
                                 Text(
                                   title,
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                                      fontWeight: FontWeight.w700,
+                                      color: iconBool
+                                          ? Colors.grey[200]
+                                          : Colors.black),
                                 ),
                                 Text(
                                   companyName,
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                                      fontWeight: FontWeight.w700,
+                                      color: iconBool
+                                          ? Colors.grey[200]
+                                          : Colors.black),
                                 ),
                               ],
                             ),
@@ -88,8 +96,9 @@ class ExperienceWidget extends StatelessWidget {
                         Text(
                           date,
                           style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
+                              fontWeight: FontWeight.w500,
+                              color:
+                                  iconBool ? Colors.grey[200] : Colors.black),
                         ),
                       ],
                     ),

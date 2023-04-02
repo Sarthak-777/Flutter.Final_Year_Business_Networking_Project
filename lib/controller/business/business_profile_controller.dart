@@ -9,43 +9,40 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProfileController extends GetxController {
+class BusinessController extends GetxController {
   Rx<String?> _uid = "".obs;
-  final Rx<Map<String, dynamic>> _user = Rx<Map<String, dynamic>>({});
+  final Rx<Map<String, dynamic>> _business = Rx<Map<String, dynamic>>({});
 
-  Map<String, dynamic> get user => _user.value;
+  Map<String, dynamic> get business => _business.value;
 
-  updateUserId(String? uid) async {
+  updateBusinessId(String? uid) async {
     _uid.value = uid;
-    await getUserData();
+    await getBusinessData();
   }
 
-  getUserData() async {
-    var userDoc = await FirebaseFirestore.instance
-        .collection("users")
+  getBusinessData() async {
+    var businessDoc = await FirebaseFirestore.instance
+        .collection("business")
         .doc(_uid.value)
         .get();
-    final userData = userDoc.data() as dynamic;
-    String username = userDoc['username'];
-    String jobCategory = userDoc['jobCategory'];
-    String profilePhoto = userDoc['profilePhoto'];
-    String country = userDoc['country'];
-    String city = userDoc['city'];
-    String jobDesc = userDoc['jobDesc'];
-    String color = userDoc['color'];
+    final businessData = businessDoc.data() as dynamic;
+    String orgName = businessDoc['orgName'];
+    String jobCategory = businessDoc['jobCategory'];
+    String profilePhoto = businessDoc['profilePhoto'];
+    String phoneNo = businessDoc['phoneNo'];
+
+    String jobDesc = businessDoc['jobDesc'];
 
     int followers = 0;
     int following = 0;
-    _user.value = {
+    _business.value = {
       'followers': followers.toString(),
       'following': following.toString(),
       'profilePhoto': profilePhoto,
-      'username': username,
-      'country': country,
+      'orgName': orgName,
       'jobCategory': jobCategory,
-      'city': city,
+      'phoneNo': phoneNo,
       'jobDesc': jobDesc,
-      'color': color,
     };
 
     update();
@@ -68,7 +65,7 @@ class ProfileController extends GetxController {
     try {
       String fileUrl = await storeImage(imageFile);
       await FirebaseFirestore.instance
-          .collection('users')
+          .collection('business')
           .doc(_uid.value)
           .update({
         'profilePhoto': fileUrl,

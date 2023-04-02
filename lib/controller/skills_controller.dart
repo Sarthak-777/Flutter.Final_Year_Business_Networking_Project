@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'dart:convert';
 
@@ -23,6 +24,19 @@ class SkillController extends GetxController {
       return data;
 
       // listResponse = mapResponse['data'];
+    }
+  }
+
+  Future storeSkillsToFirestore(List skillData, String uid) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).update(
+        {
+          'skills': FieldValue.arrayUnion(skillData),
+        },
+      );
+      Get.back();
+    } catch (e) {
+      Get.snackbar('Error', 'Some Error Occured');
     }
   }
 

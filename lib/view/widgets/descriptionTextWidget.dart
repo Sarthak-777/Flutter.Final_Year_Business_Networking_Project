@@ -1,3 +1,4 @@
+import 'package:final_project_workconnect/constants.dart';
 import 'package:flutter/material.dart';
 
 class DescriptionTextWidget extends StatefulWidget {
@@ -20,9 +21,9 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
   void initState() {
     super.initState();
 
-    if (widget.text.length > 50) {
-      firstHalf = widget.text.substring(0, 50);
-      secondHalf = widget.text.substring(50, widget.text.length);
+    if (widget.text.length > 100) {
+      firstHalf = widget.text.substring(0, 150);
+      secondHalf = widget.text.substring(150, widget.text.length);
     } else {
       firstHalf = widget.text;
       secondHalf = "";
@@ -33,10 +34,14 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
   Widget build(BuildContext context) {
     return new Container(
       child: secondHalf.isEmpty
-          ? new Text(firstHalf)
+          ? new Text(firstHalf,
+              style:
+                  TextStyle(color: iconBool ? Colors.grey[200] : Colors.black))
           : new Column(
               children: <Widget>[
-                new Text(flag ? (firstHalf + "...") : (firstHalf + secondHalf)),
+                new Text(flag ? (firstHalf + "...") : (firstHalf + secondHalf),
+                    style: TextStyle(
+                        color: iconBool ? Colors.grey[200] : Colors.black)),
                 new InkWell(
                   child: new Row(
                     mainAxisAlignment: MainAxisAlignment.end,

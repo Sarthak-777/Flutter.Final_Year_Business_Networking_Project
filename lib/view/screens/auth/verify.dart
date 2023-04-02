@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:final_project_workconnect/view/screens/home_screen.dart';
+import 'package:final_project_workconnect/view/screens/user/dashboard_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -120,7 +120,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
     await user?.reload();
     if (user!.emailVerified) {
       timer.cancel();
-      Get.offAll(HomeScreen());
+      Get.offAll(DashboardScreen());
     }
   }
 }
