@@ -67,7 +67,8 @@ class AuthController extends GetxController {
     String country = userDoc['country'];
     String city = userDoc['city'];
     String jobDesc = userDoc['jobDesc'];
-    String color = userDoc['jobDesc'];
+    String color = userDoc['color'];
+    List skills = userDoc['skills'];
 
     int followers = 0;
     int following = 0;
@@ -82,6 +83,7 @@ class AuthController extends GetxController {
       'city': city,
       'jobDesc': jobDesc,
       'color': color,
+      'skills': skills,
     };
   }
 

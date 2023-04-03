@@ -29,16 +29,14 @@ class _LandingScreenState extends State<LandingScreen> {
     authController.getBusinessData();
   }
 
-  Future getUser() async {}
-
-  // void usernameFunc() async {
-  //   String username = await getUsername();
-  //   if (this.mounted) {
-  //     setState(() {
-  //       _username = username;
-  //     });
-  //   }
-  // }
+  void usernameFunc() async {
+    String username = await getUsername();
+    if (this.mounted) {
+      setState(() {
+        _username = username;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +106,18 @@ class _LandingScreenState extends State<LandingScreen> {
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(
-                      pageIdx == 3 ? Icons.person : Icons.person_outline,
+                      pageIdx == 3
+                          ? Icons.work_history
+                          : Icons.work_history_outlined,
+                      color: themeController.iconBool.value
+                          ? Colors.white
+                          : kPrimaryColor,
+                    ),
+                    label: 'Jobs',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(
+                      pageIdx == 4 ? Icons.person : Icons.person_outline,
                       color: themeController.iconBool.value
                           ? Colors.white
                           : kPrimaryColor,

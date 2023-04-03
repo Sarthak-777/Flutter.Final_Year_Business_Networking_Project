@@ -1,6 +1,8 @@
 import 'package:final_project_workconnect/view/screens/business/business_home_screen.dart';
+import 'package:final_project_workconnect/view/screens/business/business_job_screen.dart';
 import 'package:final_project_workconnect/view/screens/business/business_profile_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/home_screen.dart';
+import 'package:final_project_workconnect/view/screens/user/jobs_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/post_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +19,16 @@ List<String> category = [
   'Teacher',
   'Marketer',
   'Student'
+];
+
+List<String> jobTime = [
+  'Full-time',
+  'Part-time',
+];
+
+List<String> jobType = [
+  'Remote',
+  'Physical',
 ];
 
 List themeData = ['red', 'blue', 'green', 'black'];
@@ -75,7 +87,7 @@ List<Widget> homeScreenItems = [
   HomeScreen(),
   Text('Search'),
   PostScreen(),
-  Text('Jobs'),
+  JobsScreen(),
   ProfileScreen(uid: ''),
 ];
 
@@ -83,6 +95,7 @@ List<Widget> businessScreenItems = [
   BusinessHomeScreen(),
   Text('Search'),
   PostScreen(),
+  BusinessJobScreen(),
   BusinessProfileScreen(uid: ''),
 ];
 
