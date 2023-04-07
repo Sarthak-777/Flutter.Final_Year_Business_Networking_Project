@@ -38,9 +38,11 @@ class _FeedCardState extends State<FeedCard> {
   Future<void> CommentsLength() async {
     String count = await homeController.commentsCount(widget.snap);
     print(count);
-    setState(() {
-      commentsCount = count;
-    });
+    if (this.mounted) {
+      setState(() {
+        commentsCount = count;
+      });
+    }
   }
 
   @override

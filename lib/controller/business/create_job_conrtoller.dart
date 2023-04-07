@@ -24,16 +24,18 @@ class CreateJobController extends GetxController {
       print(skills);
       String id = const Uuid().v1();
       Job job = Job(
-          jobDesc: jobDesc,
-          jobExp: jobExp,
-          jobId: id,
-          jobResp: jobResp,
-          jobTime: jobTime,
-          jobTitle: jobTitle,
-          jobType: jobType,
-          skills: skills,
-          username: username,
-          uid: uid);
+        jobDesc: jobDesc,
+        jobExp: jobExp,
+        jobId: id,
+        jobResp: jobResp,
+        jobTime: jobTime,
+        jobTitle: jobTitle,
+        jobType: jobType,
+        skills: skills,
+        username: username,
+        uid: uid,
+        applicants: [],
+      );
       await FirebaseFirestore.instance
           .collection('jobs')
           .doc(id)

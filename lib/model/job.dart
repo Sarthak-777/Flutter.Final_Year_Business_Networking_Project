@@ -12,6 +12,7 @@ class Job {
   List? skills;
   String? username;
   String? uid;
+  List? applicants;
 
   bool verified;
   Job({
@@ -26,6 +27,7 @@ class Job {
     this.username,
     this.verified = false,
     this.uid,
+    this.applicants,
   });
 
   Map<String, dynamic> toJson() {
@@ -41,6 +43,7 @@ class Job {
       'verified': verified,
       'username': username,
       'uid': uid,
+      'applicants': applicants,
     };
   }
 }

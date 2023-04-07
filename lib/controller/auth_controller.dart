@@ -44,6 +44,8 @@ class AuthController extends GetxController {
     } else {
       if (user.displayName == "job-seeker") {
         Get.offAll(() => DashboardScreen());
+        // Get.offAll(() => LoginScreen());
+        // FirebaseAuth.instance.signOut();
       } else {
         Get.offAll(() => LandingScreen());
       }

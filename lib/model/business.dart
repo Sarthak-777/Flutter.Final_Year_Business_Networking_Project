@@ -12,6 +12,7 @@ class Business {
   String? profilePhoto;
   String? uid;
   String? type;
+
   Business({
     this.email,
     this.orgName,
