@@ -1,3 +1,4 @@
+import 'package:final_project_workconnect/constants.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,9 @@ class DividerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Divider(
+            color: iconBool ? Colors.grey[200] : Colors.blueGrey,
             indent: 10,
             endIndent: 10,
             thickness: 1,
@@ -19,10 +21,12 @@ class DividerWidget extends StatelessWidget {
         ),
         Text(
           text,
-          style: TextStyle(color: Colors.blueGrey),
+          style:
+              TextStyle(color: iconBool ? Colors.grey[200] : Colors.blueGrey),
         ),
-        const Expanded(
+        Expanded(
           child: Divider(
+            color: iconBool ? Colors.grey[200] : Colors.blueGrey,
             indent: 10,
             endIndent: 10,
             thickness: 1,

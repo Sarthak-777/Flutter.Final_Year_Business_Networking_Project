@@ -1,28 +1,27 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:final_project_workconnect/controller/business/business_job_postings.dart';
 import 'package:final_project_workconnect/functions/toColor.dart';
+import 'package:final_project_workconnect/view/screens/business/business_applicants_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/apply_jobs_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:get/get.dart';
 
-class JobDescriptionScreen extends StatelessWidget {
+class BusinessJobDescriptionScreen extends StatelessWidget {
   var data;
-  String color;
-  JobDescriptionScreen({
+  var color;
+
+  BusinessJobDescriptionScreen({
     Key? key,
     required this.data,
-    required this.color,
+    this.color = '',
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List applicants = data['applicants'];
-    String uid = FirebaseAuth.instance.currentUser!.uid;
-
-    var contains = applicants.where((element) => element['uid'] == uid);
-
+    JobPostingsController controller = Get.put(JobPostingsController());
+    print(data['verified']);
     return Scaffold(
       appBar: AppBar(
         title: Text('Job Details'),
@@ -37,7 +36,7 @@ class JobDescriptionScreen extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
-                  color: color == '' ? Colors.red[600] : toColor(color),
+                  color: color == '' ? Colors.grey.shade800 : toColor(color),
                   // height: 100,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -45,6 +44,15 @@ class JobDescriptionScreen extends StatelessWidget {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          data['verified']
+                              ? Text('Verfied',
+                                  style: TextStyle(
+                                      color: Colors.green[700],
+                                      fontWeight: FontWeight.w700))
+                              : Text('X Not Verified',
+                                  style: TextStyle(
+                                      color: Colors.red[700],
+                                      fontWeight: FontWeight.w700)),
                           Text(
                             data['jobTitle'],
                             style: TextStyle(
@@ -234,32 +242,49 @@ class JobDescriptionScreen extends StatelessWidget {
                 ),
               ),
             ),
-            contains.isNotEmpty
-                ? Text("Already Applied",
-                    style: TextStyle(
-                        color: Colors.green[800],
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16))
-                : Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: InkWell(
-                      onTap: () {
-                        Get.to(() => ApplyJobsScreen(jobId: data['jobId']));
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Container(
-                          color: Colors.red[400],
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          alignment: Alignment.center,
-                          child: const Text("Apply",
-                              style: TextStyle(fontWeight: FontWeight.w600)),
-                        ),
-                      ),
-                    ),
-                  )
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: InkWell(
+                onTap: () {
+                  Get.to(() => BusinessApplicantScreen(
+                        jobId: data['jobId'],
+                      ));
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    color: Colors.green[700],
+                    width: MediaQuery.of(context).size.width,
+                    height: 50,
+                    alignment: Alignment.center,
+                    child: const Text("View Applicants",
+                        style: TextStyle(fontWeight: FontWeight.w600)),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: InkWell(
+                onTap: () {
+                  // Get.to(() => ApplyJobsScreen(jobId: data['jobId']));
+                  controller.deleteListing(data['jobId']);
+                  Get.snackbar("Success", "Job Removal Success");
+                  Navigator.pop(context);
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    color: Colors.red[500],
+                    width: MediaQuery.of(context).size.width,
+                    height: 50,
+                    alignment: Alignment.center,
+                    child: const Text("Remove/Delete",
+                        style: TextStyle(fontWeight: FontWeight.w600)),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),

@@ -1,4 +1,6 @@
 import 'package:final_project_workconnect/view/screens/business/business_home_screen.dart';
+import 'package:final_project_workconnect/view/screens/business/business_job_posting_screen.dart';
+
 import 'package:final_project_workconnect/view/screens/business/business_job_screen.dart';
 import 'package:final_project_workconnect/view/screens/business/business_profile_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/home_screen.dart';
@@ -93,7 +95,7 @@ List<Widget> homeScreenItems = [
 
 List<Widget> businessScreenItems = [
   BusinessHomeScreen(),
-  Text('Search'),
+  JobPostingScreen(),
   PostScreen(),
   BusinessJobScreen(),
   BusinessProfileScreen(uid: ''),

@@ -56,6 +56,7 @@ class _BusinessJobScreenState extends State<BusinessJobScreen> {
             authController.userData['orgName'],
             authController.userData['uid'],
           );
+          Get.snackbar("Success", "Job Added");
         },
         label: Text("Complete"),
       ),
