@@ -10,6 +10,7 @@ import 'package:final_project_workconnect/view/screens/business/business_home_sc
 import 'package:final_project_workconnect/view/screens/business/business_landing_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/dashboard_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -23,7 +24,6 @@ class AuthController extends GetxController {
   // final Rx<Map<String, dynamic>> _businessData = Rx<Map<String, dynamic>>({});
 
   Map<String, dynamic> get userData => _userData.value;
-  // Map<String, dynamic> get businessData => _businessData.value;
 
   static AuthController instance = Get.find();
 
@@ -38,7 +38,6 @@ class AuthController extends GetxController {
   }
 
   _setInitialView(User? user) {
-    print(user);
     if (user == null) {
       Get.offAll(() => LoginScreen());
     } else {
@@ -187,37 +186,46 @@ class AuthController extends GetxController {
           work.isNotEmpty &&
           jobCategory.isNotEmpty) {
         try {
-          UserCredential cred = await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(email: email, password: password);
-          cred.user!.updateDisplayName('job-seeker');
-          MyUser user = MyUser(
-            email: email,
-            username: username,
-            password: password,
-            country: country,
-            city: city,
-            phoneNo: phoneNo,
-            working: work,
-            jobCategory: jobCategory,
-            jobDesc: '',
-            profilePhoto:
-                'https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System/blob/main/assets/person.jpg?raw=true',
-            uid: cred.user!.uid,
-            skills: [],
-            type: 'job-seeker',
-            color: 'red',
-          );
+          RegExp regex = RegExp(
+              r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+          if (!regex.hasMatch(password)) {
+            Get.snackbar("Error",
+                "Password should atlease have 1 capital letter, a symbol and a number. Please try again",
+                colorText: Colors.black, backgroundColor: Colors.white);
+          } else {
+            UserCredential cred = await FirebaseAuth.instance
+                .createUserWithEmailAndPassword(
+                    email: email, password: password);
+            cred.user!.updateDisplayName('job-seeker');
+            MyUser user = MyUser(
+              email: email,
+              username: username,
+              password: password,
+              country: country,
+              city: city,
+              phoneNo: phoneNo,
+              working: work,
+              jobCategory: jobCategory,
+              jobDesc: '',
+              profilePhoto:
+                  'https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System/blob/main/assets/person.jpg?raw=true',
+              uid: cred.user!.uid,
+              skills: [],
+              type: 'job-seeker',
+              color: 'red',
+            );
 
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(cred.user!.uid)
-              .set(user.toMap());
-          await FirebaseFirestore.instance
-              .collection('email')
-              .doc(email)
-              .set({"email": email});
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(cred.user!.uid)
+                .set(user.toMap());
+            await FirebaseFirestore.instance
+                .collection('email')
+                .doc(email)
+                .set({"email": email});
 
-          Get.to(VerifyScreen());
+            Get.offAll(VerifyScreen());
+          }
         } on FirebaseAuthException catch (e) {
           Get.snackbar("Error", e.code);
         }
@@ -311,14 +319,11 @@ class AuthController extends GetxController {
           .doc(userCred.user!.email)
           .set({"email": userCred.user!.email});
       try {
-        print(allData);
         for (var data in allData) {
           if (userCred.user!.email == (data as Map)['email']) {
-            print('home');
             Get.off(() => DashboardScreen());
             break;
           } else {
-            print('google');
             Get.to(() => GoogleLogin(), arguments: [userCred]);
           }
         }

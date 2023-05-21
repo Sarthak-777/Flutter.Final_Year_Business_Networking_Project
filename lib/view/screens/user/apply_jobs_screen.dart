@@ -185,7 +185,7 @@ class _ApplyJobsScreenState extends State<ApplyJobsScreen> {
                         _summaryController.text,
                         widget.jobId);
                     Get.snackbar("success", "Applied for Job");
-                    Get.offAll(() => JobsScreen());
+                    Get.off(() => JobsScreen());
                   } else {
                     // User canceled the picker
                   }

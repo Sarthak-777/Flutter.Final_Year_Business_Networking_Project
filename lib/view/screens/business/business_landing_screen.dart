@@ -41,13 +41,6 @@ class _LandingScreenState extends State<LandingScreen> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
-          // appBar:
-          //     AppBar(elevation: 0, backgroundColor: Colors.transparent, actions: [
-
-          //   const SizedBox(
-          //     width: 8.0,
-          //   ),
-          // ]),
           backgroundColor:
               themeController.iconBool.value ? Colors.black : Colors.white,
           bottomNavigationBar: Container(
