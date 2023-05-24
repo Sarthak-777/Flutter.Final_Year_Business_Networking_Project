@@ -12,18 +12,19 @@ class Business {
   String? profilePhoto;
   String? uid;
   String? type;
+  List? orgNameSubstring;
 
-  Business({
-    this.email,
-    this.orgName,
-    this.password,
-    this.phoneNo,
-    this.jobCategory,
-    this.jobDesc,
-    this.profilePhoto,
-    this.uid,
-    this.type,
-  });
+  Business(
+      {this.email,
+      this.orgName,
+      this.password,
+      this.phoneNo,
+      this.jobCategory,
+      this.jobDesc,
+      this.profilePhoto,
+      this.uid,
+      this.type,
+      this.orgNameSubstring});
 
   Business copyWith({
     String? email,
@@ -59,6 +60,7 @@ class Business {
       'profilePhoto': profilePhoto,
       'uid': uid,
       'type': type,
+      'orgNameSubstring': orgNameSubstring,
     };
   }
 

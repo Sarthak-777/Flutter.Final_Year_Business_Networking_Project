@@ -108,7 +108,9 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                Get.back();
+                              },
                               child: Icon(
                                 Icons.chevron_left_outlined,
                                 color: Colors.grey[200],

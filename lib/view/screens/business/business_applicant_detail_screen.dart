@@ -2,6 +2,7 @@ import 'package:final_project_workconnect/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ApplicantDetails extends StatelessWidget {
   var data;
@@ -75,7 +76,16 @@ class ApplicantDetails extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () async {
+                    await launchUrl(Uri.parse(data['file']),
+                        mode: LaunchMode
+                            .externalApplication); //launch is from url_launcher package to launch URL
+
+                    // final Uri url = Uri.parse(data['file']);
+                    // if (!await launchUrl(url)) {
+                    //   throw Exception('Could not launch url');
+                    // }
+                  },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Container(

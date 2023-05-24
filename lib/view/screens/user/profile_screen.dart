@@ -41,6 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (widget.uid != '') {
       uid = widget.uid;
     }
+
     profileController.updateUserId(uid);
     authController.getUserData();
     colorData();
@@ -106,7 +107,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                Get.back();
+                              },
                               child: Icon(
                                 Icons.chevron_left_outlined,
                                 color: Colors.grey[200],

@@ -5,6 +5,8 @@ import 'package:final_project_workconnect/view/screens/business/business_job_scr
 import 'package:final_project_workconnect/view/screens/business/business_profile_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/home_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/jobs_screen.dart';
+import 'package:final_project_workconnect/view/screens/user/search_screen.dart';
+
 import 'package:final_project_workconnect/view/screens/user/post_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -87,7 +89,7 @@ const kBgMainColor = Color.fromARGB(255, 255, 241, 246);
 
 List<Widget> homeScreenItems = [
   HomeScreen(),
-  Text('Search'),
+  SearchScreen(),
   PostScreen(),
   JobsScreen(),
   ProfileScreen(uid: ''),

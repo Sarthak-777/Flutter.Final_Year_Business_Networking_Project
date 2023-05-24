@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:final_project_workconnect/functions/sendEmail.dart';
 import 'package:final_project_workconnect/view/screens/user/jobs_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:final_project_workconnect/controller/job_controller.dart';
 import 'package:final_project_workconnect/view/screens/user/resume_generator.dart';
 import 'package:final_project_workconnect/view/widgets/dividerWidget.dart';
 import 'package:final_project_workconnect/view/widgets/textInputWidget.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class ApplyJobsScreen extends StatefulWidget {
   String jobId;
@@ -173,9 +175,15 @@ class _ApplyJobsScreenState extends State<ApplyJobsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: InkWell(
-                onTap: () {
+                onTap: () async {
                   if (result != null) {
                     File file = File(result!.files.single.path!);
+                    await sendEmail(
+                        name: _usernameController.text,
+                        email: _emailController.text,
+                        subject: "Job Application Sent",
+                        message:
+                            "Thank you for using workconnect. Your application has been sent");
                     jobController.applyJob(
                         FirebaseAuth.instance.currentUser!.uid,
                         _usernameController.text,

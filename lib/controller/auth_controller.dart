@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:final_project_workconnect/functions/subString.dart';
 
 class AuthController extends GetxController {
   late Rx<User?> _user;
@@ -140,17 +141,21 @@ class AuthController extends GetxController {
           UserCredential cred = await FirebaseAuth.instance
               .createUserWithEmailAndPassword(email: email, password: password);
           cred.user!.updateDisplayName('employer');
+          List orgNameSubstring = createSubString(orgName);
+
           Business business = Business(
-              email: email,
-              orgName: orgName,
-              password: password,
-              phoneNo: phoneNo,
-              jobCategory: jobCategory,
-              jobDesc: '',
-              profilePhoto:
-                  'https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System/blob/main/assets/person.jpg?raw=true',
-              uid: cred.user!.uid,
-              type: 'employer');
+            email: email,
+            orgName: orgName,
+            password: password,
+            phoneNo: phoneNo,
+            jobCategory: jobCategory,
+            jobDesc: '',
+            profilePhoto:
+                'https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System/blob/main/assets/person.jpg?raw=true',
+            uid: cred.user!.uid,
+            type: 'employer',
+            orgNameSubstring: orgNameSubstring,
+          );
 
           await FirebaseFirestore.instance
               .collection('business')
@@ -197,6 +202,8 @@ class AuthController extends GetxController {
                 .createUserWithEmailAndPassword(
                     email: email, password: password);
             cred.user!.updateDisplayName('job-seeker');
+            List usernameSubstring = createSubString(username);
+
             MyUser user = MyUser(
               email: email,
               username: username,
@@ -213,6 +220,7 @@ class AuthController extends GetxController {
               skills: [],
               type: 'job-seeker',
               color: 'red',
+              usernameSubstring: usernameSubstring,
             );
 
             await FirebaseFirestore.instance
@@ -247,6 +255,8 @@ class AuthController extends GetxController {
       String phoneNo,
       String working,
       String jobCategory) async {
+    List usernameSubstring = createSubString(username);
+
     MyUser user = MyUser(
       email: email,
       username: username,
@@ -262,6 +272,7 @@ class AuthController extends GetxController {
       skills: [],
       type: 'job-seeker',
       color: 'red',
+      usernameSubstring: usernameSubstring,
     );
     try {
       await FirebaseFirestore.instance
