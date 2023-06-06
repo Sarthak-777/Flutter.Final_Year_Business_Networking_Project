@@ -11,7 +11,6 @@ class BusinessApplicantScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(jobId);
     return Scaffold(
         appBar: AppBar(
           title: Text('View Applicants'),
@@ -27,12 +26,12 @@ class BusinessApplicantScreen extends StatelessWidget {
               return Text("Loading...");
             }
             var data = snapshot.data!.docs[0].data() as dynamic;
-            print(data['applicants'][0]['email']);
+            print(data['applicants']);
 
             return ListView.builder(
               padding: EdgeInsets.symmetric(horizontal: 0),
               scrollDirection: Axis.vertical,
-              itemCount: snapshot.data!.docs.length,
+              itemCount: data['applicants'].length,
               itemBuilder: (context, index) => InkWell(
                 onTap: () {},
                 child: SizedBox(
@@ -44,8 +43,9 @@ class BusinessApplicantScreen extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         child: InkWell(
                           onTap: () {
-                            Get.to(() =>
-                                ApplicantDetails(data: data['applicants'][0]));
+                            Get.to(() => ApplicantDetails(
+                                applicantData: data['applicants'][index],
+                                jobId: jobId));
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

@@ -1,18 +1,22 @@
 import 'package:final_project_workconnect/constants.dart';
 import 'package:final_project_workconnect/functions/getAllPosts.dart';
+import 'package:final_project_workconnect/view/screens/user/add_experience_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ExperienceWidget extends StatelessWidget {
   String companyImage;
   String title;
   String companyName;
   String date;
+  String? uid;
 
   ExperienceWidget({
     this.companyName = '',
     this.title = '',
     this.companyImage = '',
     this.date = '',
+    required this.uid,
     Key? key,
   }) : super(key: key);
 
@@ -26,7 +30,9 @@ class ExperienceWidget extends StatelessWidget {
             onTap: () {},
             child: date == ''
                 ? InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(() => AddExperienceScreen(uid: uid));
+                    },
                     child: Container(
                       color: iconBool ? Colors.blueGrey[800] : Colors.white,
                       height: 90,

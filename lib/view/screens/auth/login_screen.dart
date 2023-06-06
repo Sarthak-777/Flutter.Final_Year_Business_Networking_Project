@@ -1,7 +1,7 @@
 import 'package:final_project_workconnect/controller/auth_controller.dart';
 import 'package:final_project_workconnect/view/screens/auth/forgot_password.dart';
 import 'package:final_project_workconnect/view/screens/business/auth/business_login_screen.dart';
-import 'package:final_project_workconnect/view/widgets/TextInputWidget.dart';
+import 'package:final_project_workconnect/view/widgets/textInputWidget.dart';
 import 'package:final_project_workconnect/view/widgets/dividerWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

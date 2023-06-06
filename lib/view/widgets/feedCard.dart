@@ -2,7 +2,9 @@ import 'package:final_project_workconnect/constants.dart';
 import 'package:final_project_workconnect/controller/auth_controller.dart';
 import 'package:final_project_workconnect/controller/home_controller.dart';
 import 'package:final_project_workconnect/functions/toColor.dart';
+import 'package:final_project_workconnect/view/screens/user/comments_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/profile_screen.dart';
+import 'package:final_project_workconnect/view/widgets/drag_to_pop_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -177,12 +179,7 @@ class _FeedCardState extends State<FeedCard> {
                       ),
                       InkWell(
                           onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   ImageViewerPageRoute(
-                            //       builder: (context) =>
-                            //           CommentsScreen(snap: widget.snap)),
-                            // ),
+                            Get.to(() => CommentsScreen(snap: widget.snap));
                           },
                           child: Icon(
                             Icons.comment_bank_outlined,

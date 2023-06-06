@@ -13,6 +13,7 @@ import 'package:final_project_workconnect/view/screens/user/edit_profile_screen.
 import 'package:final_project_workconnect/view/screens/user/photo_view_screen.dart';
 import 'package:final_project_workconnect/view/widgets/descriptionTextWidget.dart';
 import 'package:final_project_workconnect/view/widgets/experienceWidget.dart';
+import 'package:final_project_workconnect/view/widgets/jobExperienceWidget.dart';
 import 'package:final_project_workconnect/view/widgets/skillsWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -33,12 +34,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final AuthController authController = Get.put(AuthController());
   String? uid = FirebaseAuth.instance.currentUser!.uid;
   String color = '';
+  bool data = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     if (widget.uid != '') {
+      data = true;
       uid = widget.uid;
     }
 
@@ -71,6 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     Uint8List? _file;
+    print(data);
 
     return GetBuilder<ProfileController>(
         builder: (controller) => controller.user.isEmpty
@@ -333,7 +337,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ])),
                             // const SizedBox(width: 100),
                             InkWell(
-                              onTap: () => authController.signOut(),
+                              onTap: () => {print(controller.user)},
                               child: Icon(
                                 Icons.logout_outlined,
                                 color: Colors.blueGrey[100],
@@ -429,18 +433,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               : Colors.black)),
                                 ),
                                 const SizedBox(height: 10),
+                                data
+                                    ? Text('')
+                                    : SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Column(
+                                          children: [
+                                            ExperienceWidget(uid: uid),
+                                          ],
+                                        ),
+                                      ),
                                 SizedBox(
                                   width: MediaQuery.of(context).size.width,
                                   child: Column(
-                                    children: [
-                                      ExperienceWidget(),
-                                      ExperienceWidget(
-                                          companyImage:
-                                              'assets/google-icon.png',
-                                          companyName: 'Google',
-                                          date: '2021 - 2022',
-                                          title: 'UI/UX Developer'),
-                                    ],
+                                    children: [JobExperienceWidget(uid: uid)],
                                   ),
                                 ),
                               ],

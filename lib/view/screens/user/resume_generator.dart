@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ResumeForm extends StatefulWidget {
   @override
@@ -20,6 +21,27 @@ class _ResumeFormState extends State<ResumeForm> {
   late String? _education;
   late String? _workExperience;
   late String? _skills;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    var data = requestPermission();
+    super.initState();
+  }
+
+  void requestPermission() async {
+    PermissionStatus status = await Permission.storage.request();
+    //PermissionStatus status1 = await Permission.accessMediaLocation.request();
+    PermissionStatus status2 = await Permission.manageExternalStorage.request();
+    print('status $status   -> $status2');
+    if (status.isGranted && status2.isGranted) {
+      print('granted');
+    } else if (status.isPermanentlyDenied || status2.isPermanentlyDenied) {
+      await openAppSettings();
+    } else if (status.isDenied) {
+      print('Permission Denied');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +199,7 @@ class _ResumeFormState extends State<ResumeForm> {
 
 // Get the document directory path on the device
     final directory = await getApplicationDocumentsDirectory();
-    final path = '/storage/emulated/0/Download/resume.pdf';
+    final path = '/storage/emulated/0/Download/cv.pdf';
 
 // Save the PDF file to the device
     final file = File(path);

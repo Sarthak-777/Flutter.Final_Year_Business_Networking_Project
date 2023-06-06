@@ -1,4 +1,5 @@
-import 'package:final_project_workconnect/controller/search_controller.dart';
+import 'package:final_project_workconnect/controller/search_controller.dart'
+    as controller;
 import 'package:final_project_workconnect/view/screens/business/auth/business_register_screen.dart';
 import 'package:final_project_workconnect/view/screens/business/business_profile_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/job_description_screen.dart';
@@ -16,7 +17,8 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  SearchController searchController = Get.put(SearchController());
+  controller.SearchController searchController =
+      Get.put(controller.SearchController());
 
   @override
   Widget build(BuildContext context) {

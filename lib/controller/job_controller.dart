@@ -68,7 +68,7 @@ class JobController extends GetxController {
     String fileUrl = await storeFile(file);
 
     await FirebaseFirestore.instance.collection("jobs").doc(jobId).update({
-      "applicants": [
+      "applicants": FieldValue.arrayUnion([
         {
           'uid': uid,
           'username': username,
@@ -76,8 +76,9 @@ class JobController extends GetxController {
           'phone': phone,
           'email': email,
           'summary': summary,
+          'status': "pending",
         }
-      ]
+      ])
     });
   }
 }

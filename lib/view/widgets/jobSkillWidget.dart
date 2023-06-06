@@ -44,7 +44,6 @@ class jobSkillWidget extends StatelessWidget {
                         i++) ...[
                       InkWell(
                         onTap: () {
-                          print(snapshot.data.data()['skills'][i]);
                           jobController
                               .getSkillData(snapshot.data.data()['skills'][i]);
                         },

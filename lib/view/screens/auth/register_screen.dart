@@ -2,9 +2,10 @@ import 'dart:ffi';
 
 import 'package:final_project_workconnect/constants.dart';
 import 'package:final_project_workconnect/controller/auth_controller.dart';
-import 'package:final_project_workconnect/view/widgets/TextInputWidget.dart';
+
 import 'package:final_project_workconnect/view/widgets/passwordValidatorWidget.dart';
 import 'package:final_project_workconnect/view/widgets/dividerWidget.dart';
+import 'package:final_project_workconnect/view/widgets/textInputWidget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

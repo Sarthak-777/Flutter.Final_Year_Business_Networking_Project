@@ -5,6 +5,7 @@ import 'package:final_project_workconnect/controller/auth_controller.dart';
 import 'package:final_project_workconnect/controller/post_controller.dart';
 import 'package:final_project_workconnect/functions/pickImage.dart';
 import 'package:final_project_workconnect/model/post.dart';
+import 'package:final_project_workconnect/view/screens/user/forum_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -49,6 +50,14 @@ class _PostScreenState extends State<PostScreen> {
                   setState(() {
                     _file = file;
                   });
+                },
+              ),
+              SimpleDialogOption(
+                child: const Text('Create a Forum'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+
+                  Get.to(() => ForumScreen());
                 },
               ),
               SimpleDialogOption(
@@ -141,7 +150,6 @@ class _PostScreenState extends State<PostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(authController.userData);
     return _file == null
         ? Column(
             mainAxisAlignment: MainAxisAlignment.center,

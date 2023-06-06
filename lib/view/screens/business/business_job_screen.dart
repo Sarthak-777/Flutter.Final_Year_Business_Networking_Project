@@ -4,9 +4,10 @@ import 'package:final_project_workconnect/controller/business/create_job_conrtol
 import 'package:final_project_workconnect/controller/skills_controller.dart';
 import 'package:final_project_workconnect/functions/getUsername.dart';
 import 'package:final_project_workconnect/view/widgets/dividerWidget.dart';
+import 'package:final_project_workconnect/view/widgets/textInputWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project_workconnect/view/widgets/TextInputWidget.dart';
+
 import 'package:get/get.dart';
 
 class BusinessJobScreen extends StatefulWidget {
