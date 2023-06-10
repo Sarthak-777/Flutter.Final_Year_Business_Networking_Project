@@ -17,23 +17,28 @@ class MyUser {
   String? type;
   String? color;
   List? usernameSubstring;
+  List? followers;
+  List? following;
 
-  MyUser(
-      {required this.email,
-      required this.username,
-      required this.password,
-      required this.country,
-      required this.city,
-      required this.phoneNo,
-      required this.working,
-      required this.jobCategory,
-      required this.jobDesc,
-      required this.profilePhoto,
-      required this.uid,
-      required this.skills,
-      required this.type,
-      required this.color,
-      required this.usernameSubstring});
+  MyUser({
+    required this.email,
+    required this.username,
+    required this.password,
+    required this.country,
+    required this.city,
+    required this.phoneNo,
+    required this.working,
+    required this.jobCategory,
+    required this.jobDesc,
+    required this.profilePhoto,
+    required this.uid,
+    required this.skills,
+    required this.type,
+    required this.color,
+    required this.usernameSubstring,
+    required this.followers,
+    required this.following,
+  });
 
   MyUser.fromMap(Map<String, dynamic> map) {
     city = map["city"];
@@ -60,6 +65,8 @@ class MyUser {
       'type': type,
       'color': color,
       'usernameSubstring': usernameSubstring,
+      'followers': followers,
+      'following': following,
     };
   }
 

@@ -176,7 +176,11 @@ class _ApplyJobsScreenState extends State<ApplyJobsScreen> {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: InkWell(
                 onTap: () async {
-                  if (result != null) {
+                  if (result != null &&
+                      _phoneController.text.isNotEmpty &&
+                      _emailController.text.isNotEmpty &&
+                      _usernameController.text.isNotEmpty &&
+                      _summaryController.text.isNotEmpty) {
                     File file = File(result!.files.single.path!);
                     await sendEmail(
                         name: _usernameController.text,
@@ -196,6 +200,7 @@ class _ApplyJobsScreenState extends State<ApplyJobsScreen> {
                     Get.off(() => JobsScreen());
                   } else {
                     // User canceled the picker
+                    Get.snackbar("Error", "Please enter all the fields");
                   }
                 },
                 child: ClipRRect(

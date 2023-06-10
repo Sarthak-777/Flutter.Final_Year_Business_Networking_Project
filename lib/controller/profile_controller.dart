@@ -33,12 +33,12 @@ class ProfileController extends GetxController {
     String city = userDoc['city'];
     String jobDesc = userDoc['jobDesc'];
     String color = userDoc['color'];
+    List followers = userDoc['followers'];
+    List following = userDoc['following'];
 
-    int followers = 0;
-    int following = 0;
     _user.value = {
-      'followers': followers.toString(),
-      'following': following.toString(),
+      'followers': followers,
+      'following': following,
       'profilePhoto': profilePhoto,
       'username': username,
       'country': country,

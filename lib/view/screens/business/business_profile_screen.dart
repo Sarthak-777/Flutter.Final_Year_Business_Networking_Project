@@ -37,6 +37,8 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   final AuthController authController = Get.put(AuthController());
   String? uid = FirebaseAuth.instance.currentUser!.uid;
   String color = '';
+  bool isUser = false;
+  bool isFollowing = false;
 
   @override
   void initState() {
@@ -44,9 +46,11 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
     super.initState();
     if (widget.uid != '') {
       uid = widget.uid;
+      isUser = true;
     }
     businessController.updateBusinessId(uid);
     authController.getBusinessData();
+    getIsFollowing();
   }
 
   bool isLoading = false;
@@ -55,6 +59,17 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   // void colorData() async {
   //   color = await authController.getColorData(uid!);
   // }
+
+  getIsFollowing() async {
+    var data =
+        await FirebaseFirestore.instance.collection("business").doc(uid).get();
+    List followers = data.data()!['followers'];
+    if (followers.contains(FirebaseAuth.instance.currentUser!.uid)) {
+      setState(() {
+        isFollowing = true;
+      });
+    }
+  }
 
   void cropImage(XFile file) async {
     CroppedFile? croppedImage = await ImageCropper().cropImage(
@@ -73,7 +88,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   @override
   Widget build(BuildContext context) {
     Uint8List? _file;
-    print(uid);
+    print(isUser);
 
     return GetBuilder<BusinessController>(
         builder: (controller) => controller.business.isEmpty
@@ -117,11 +132,10 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                               ),
                             ),
                             Container(
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(50),
                                     child: InkWell(
@@ -330,8 +344,112 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                                       },
                                       child: Icon(Icons.settings,
                                           size: 16,
-                                          color: Colors.blueGrey[100]))
-                                ])),
+                                          color: Colors.blueGrey[100])),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Followers",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.blueGrey[100],
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        '0',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.blueGrey[100],
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  isUser
+                                      ? InkWell(
+                                          onTap: () async {
+                                            var snap = await FirebaseFirestore
+                                                .instance
+                                                .collection('users')
+                                                .doc(FirebaseAuth
+                                                    .instance.currentUser!.uid)
+                                                .get();
+                                            List following = (snap.data()!
+                                                as dynamic)['following'];
+
+                                            if (following.contains(uid)) {
+                                              await FirebaseFirestore.instance
+                                                  .collection('business')
+                                                  .doc(uid)
+                                                  .update({
+                                                'followers':
+                                                    FieldValue.arrayRemove([
+                                                  FirebaseAuth
+                                                      .instance.currentUser!.uid
+                                                ])
+                                              });
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(FirebaseAuth.instance
+                                                      .currentUser!.uid)
+                                                  .update({
+                                                'following':
+                                                    FieldValue.arrayRemove(
+                                                        [uid])
+                                              });
+                                            } else {
+                                              await FirebaseFirestore.instance
+                                                  .collection('business')
+                                                  .doc(uid)
+                                                  .update({
+                                                'followers':
+                                                    FieldValue.arrayUnion([
+                                                  FirebaseAuth
+                                                      .instance.currentUser!.uid
+                                                ])
+                                              });
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(FirebaseAuth.instance
+                                                      .currentUser!.uid)
+                                                  .update({
+                                                'following':
+                                                    FieldValue.arrayUnion([uid])
+                                              });
+                                            }
+                                            setState(() {
+                                              isFollowing = !isFollowing;
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 10,
+                                            ),
+                                            child: isFollowing
+                                                ? Text(
+                                                    'Unfollow',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    'Follow',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                          ),
+                                        )
+                                      : Text(''),
+                                ],
+                              ),
+                            ),
                             // const SizedBox(width: 100),
                             InkWell(
                               onTap: () => authController.signOut(),

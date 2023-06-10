@@ -35,6 +35,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? uid = FirebaseAuth.instance.currentUser!.uid;
   String color = '';
   bool data = false;
+  bool isUser = false;
+  bool isFollowing = false;
 
   @override
   void initState() {
@@ -42,16 +44,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     if (widget.uid != '') {
       data = true;
+      isUser = true;
       uid = widget.uid;
     }
 
     profileController.updateUserId(uid);
     authController.getUserData();
+    getIsFollowing();
     colorData();
   }
 
   bool isLoading = false;
   var imageFile;
+
+  getIsFollowing() async {
+    var data =
+        await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    List followers = data.data()!['followers'];
+    if (followers.contains(FirebaseAuth.instance.currentUser!.uid)) {
+      setState(() {
+        isFollowing = true;
+      });
+    }
+  }
 
   void colorData() async {
     color = await authController.getColorData(uid!);
@@ -74,7 +89,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     Uint8List? _file;
-    print(data);
 
     return GetBuilder<ProfileController>(
         builder: (controller) => controller.user.isEmpty
@@ -89,19 +103,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           bottomLeft: Radius.circular(30),
                           bottomRight: Radius.circular(30)),
                       child: Container(
-                        // backgroundColor:  Colors.red[900],
-                        // shape: const RoundedRectangleBorder(
-                        //   borderRadius: BorderRadius.vertical(
-                        //     bottom: Radius.circular(30),
-                        //     top: Radius.circular(30),
-                        //   ),
-                        // ),
-                        // actions: [
-
-                        //   const SizedBox(width: 20),
-                        // ],
-                        // toolbarHeight: 220,
-
                         color: controller.user['color'] == ''
                             ? Colors.red[600]
                             : toColor(controller.user['color']),
@@ -333,11 +334,114 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       },
                                       child: Icon(Icons.settings,
                                           size: 16,
-                                          color: Colors.blueGrey[100]))
+                                          color: Colors.blueGrey[100])),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Followers",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.blueGrey[100],
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        '0',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.blueGrey[100],
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  isUser
+                                      ? InkWell(
+                                          onTap: () async {
+                                            var snap = await FirebaseFirestore
+                                                .instance
+                                                .collection('users')
+                                                .doc(FirebaseAuth
+                                                    .instance.currentUser!.uid)
+                                                .get();
+                                            List following = (snap.data()!
+                                                as dynamic)['following'];
+
+                                            if (following.contains(uid)) {
+                                              await FirebaseFirestore.instance
+                                                ..collection('users')
+                                                    .doc(uid)
+                                                    .update({
+                                                  'followers':
+                                                      FieldValue.arrayRemove([
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid
+                                                  ])
+                                                });
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(FirebaseAuth.instance
+                                                      .currentUser!.uid)
+                                                  .update({
+                                                'following':
+                                                    FieldValue.arrayRemove(
+                                                        [uid])
+                                              });
+                                            } else {
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(uid)
+                                                  .update({
+                                                'followers':
+                                                    FieldValue.arrayUnion([
+                                                  FirebaseAuth
+                                                      .instance.currentUser!.uid
+                                                ])
+                                              });
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(FirebaseAuth.instance
+                                                      .currentUser!.uid)
+                                                  .update({
+                                                'following':
+                                                    FieldValue.arrayUnion([uid])
+                                              });
+                                            }
+                                            setState(() {
+                                              isFollowing = !isFollowing;
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 10,
+                                            ),
+                                            child: isFollowing
+                                                ? Text(
+                                                    'Unfollow',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    'Follow',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                          ),
+                                        )
+                                      : Text(''),
                                 ])),
+
                             // const SizedBox(width: 100),
                             InkWell(
-                              onTap: () => {print(controller.user)},
+                              onTap: () => {FirebaseAuth.instance.signOut()},
                               child: Icon(
                                 Icons.logout_outlined,
                                 color: Colors.blueGrey[100],

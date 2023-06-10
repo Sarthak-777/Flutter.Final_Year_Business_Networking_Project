@@ -62,7 +62,7 @@ class LoginScreen extends StatelessWidget {
                 InkWell(
                   onTap: () async {
                     bool result = await Get.to(() => ForgotPassword());
-                    print(result);
+
                     if (result != null && result == true) {
                       //Show SnackBar
                       Get.snackbar("Email sent",

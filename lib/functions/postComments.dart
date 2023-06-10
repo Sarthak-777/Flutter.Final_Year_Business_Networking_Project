@@ -6,7 +6,6 @@ Future<String> postComments(snap, text, user) async {
   try {
     String commentId = Uuid().v1();
 
-    print(user);
     await FirebaseFirestore.instance
         .collection('posts')
         .doc(snap['postId'])
@@ -23,7 +22,6 @@ Future<String> postComments(snap, text, user) async {
     res = 'success';
   } catch (e) {
     res = e.toString();
-    print(res);
   }
   return res;
 }

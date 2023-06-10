@@ -17,7 +17,7 @@ class JobController extends GetxController {
         )
         .where('verified', isEqualTo: true)
         .get();
-    print(result.docs);
+
     if (result.docs.isEmpty) {
       skillList.value = ['not-found'];
     } else {
@@ -30,7 +30,7 @@ class JobController extends GetxController {
         .collection('jobs')
         .where('verified', isEqualTo: true)
         .get();
-    print(result.docs);
+
     if (result.docs.isEmpty) {
       skillList.value = ['not-found'];
     } else {

@@ -39,7 +39,7 @@ class _FeedCardState extends State<FeedCard> {
 
   Future<void> CommentsLength() async {
     String count = await homeController.commentsCount(widget.snap);
-    print(count);
+
     if (this.mounted) {
       setState(() {
         commentsCount = count;
@@ -56,7 +56,6 @@ class _FeedCardState extends State<FeedCard> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.snap);
     var user = authController.userData;
     return Padding(
       padding: const EdgeInsets.only(right: 20, left: 20, bottom: 20),
@@ -108,7 +107,7 @@ class _FeedCardState extends State<FeedCard> {
                                         ProfileScreen(uid: widget.snap['uid']));
                                   },
                                   child: Text(
-                                    '${widget.snap['username']}',
+                                    '${widget.snap['username']} has created a ${widget.snap['type']}',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: iconBool
@@ -143,20 +142,28 @@ class _FeedCardState extends State<FeedCard> {
                     ),
                   ],
                 ),
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30.0),
-                    topRight: Radius.circular(30.0),
-                  ),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    width: double.infinity,
-                    child: Image.network(
-                      widget.snap['postUrl'],
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+                widget.snap['type'] == 'forum'
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 10),
+                        child: Text(widget.snap['description'],
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500)),
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30.0),
+                          topRight: Radius.circular(30.0),
+                        ),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.25,
+                          width: double.infinity,
+                          child: Image.network(
+                            widget.snap['postUrl'],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
@@ -220,35 +227,38 @@ class _FeedCardState extends State<FeedCard> {
                     ],
                   ),
                 ),
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 5.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          '${widget.snap['username']}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color:
-                                iconBool ? Colors.grey[200] : Colors.grey[800],
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Icon(Icons.circle, size: 5),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(widget.snap['description'],
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
+                widget.snap['type'] == 'forum'
+                    ? Text('')
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 5.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              '${widget.snap['username']}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
                                 color: iconBool
                                     ? Colors.grey[200]
                                     : Colors.grey[800],
-                                fontSize: 14)),
-                      ],
-                    )),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Icon(Icons.circle, size: 5),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(widget.snap['description'],
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    color: iconBool
+                                        ? Colors.grey[200]
+                                        : Colors.grey[800],
+                                    fontSize: 14)),
+                          ],
+                        )),
               ],
             ),
           ),

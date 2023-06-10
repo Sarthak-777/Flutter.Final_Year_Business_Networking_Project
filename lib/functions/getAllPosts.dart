@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 getAllPosts(String color) async {
-  print(color);
   QuerySnapshot result = await FirebaseFirestore.instance
       .collection('posts')
       .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)

@@ -71,13 +71,13 @@ class AuthController extends GetxController {
     String jobDesc = userDoc['jobDesc'];
     String color = userDoc['color'];
     List skills = userDoc['skills'];
+    List followers = userDoc['followers'];
+    List following = userDoc['following'];
 
-    int followers = 0;
-    int following = 0;
     return _userData.value = {
       'uid': uid,
-      'followers': followers.toString(),
-      'following': following.toString(),
+      'followers': followers,
+      'following': following,
       'profilePhoto': profilePhoto,
       'username': username,
       'country': country,
@@ -221,6 +221,8 @@ class AuthController extends GetxController {
               type: 'job-seeker',
               color: 'red',
               usernameSubstring: usernameSubstring,
+              followers: [],
+              following: [],
             );
 
             await FirebaseFirestore.instance
@@ -273,6 +275,8 @@ class AuthController extends GetxController {
       type: 'job-seeker',
       color: 'red',
       usernameSubstring: usernameSubstring,
+      followers: [],
+      following: [],
     );
     try {
       await FirebaseFirestore.instance
@@ -342,6 +346,7 @@ class AuthController extends GetxController {
         log(e.toString());
       }
     } catch (e) {
+      print(e);
       Get.snackbar("Failed", "Sign in Failed");
     }
   }

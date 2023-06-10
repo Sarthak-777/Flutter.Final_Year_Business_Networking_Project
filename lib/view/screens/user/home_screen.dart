@@ -34,6 +34,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  var stream = FirebaseFirestore.instance.collection('posts').snapshots();
+  @override
   Widget build(BuildContext context) {
     getUserInfo();
 
@@ -112,24 +119,69 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection('posts')
-                        .snapshots(),
-                    builder: (context, AsyncSnapshot snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Text("Loading...");
-                      }
-                      return Expanded(
-                        child: ListView.builder(
-                          padding: EdgeInsets.only(top: 10),
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (context, index) =>
-                              FeedCard(snap: snapshot.data.docs[index].data()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                            onTap: () async {
+                              setState(() {
+                                stream = FirebaseFirestore.instance
+                                    .collection('posts')
+                                    .where("uid",
+                                        whereIn: userData['following'])
+                                    .snapshots();
+                              });
+                            },
+                            child: Text('Following')),
+                        InkWell(
+                            onTap: () async {
+                              setState(() {
+                                stream = FirebaseFirestore.instance
+                                    .collection('posts')
+                                    .where("uid",
+                                        whereNotIn: userData['following'])
+                                    .snapshots();
+                              });
+                            },
+                            child: Text('All Posts')),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: StreamBuilder(
+                            stream: stream != null
+                                ? stream
+                                : FirebaseFirestore.instance
+                                    .collection('posts')
+                                    .where("uid",
+                                        whereIn: userData['following'])
+                                    .snapshots(),
+                            builder: (context, AsyncSnapshot snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Text("Loading...");
+                              }
+                              return Container(
+                                height: MediaQuery.of(context).size.height,
+                                child: ListView.builder(
+                                  padding: EdgeInsets.only(top: 10),
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (context, index) => FeedCard(
+                                      snap: snapshot.data.docs[index].data()),
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      );
-                    },
-                  )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             );
