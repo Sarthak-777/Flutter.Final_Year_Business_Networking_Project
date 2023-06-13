@@ -7,7 +7,13 @@ import 'package:get/get.dart';
 
 class BusinessApplicantScreen extends StatelessWidget {
   String jobId;
-  BusinessApplicantScreen({super.key, required this.jobId});
+  String jobName;
+  String orgName;
+  BusinessApplicantScreen(
+      {super.key,
+      required this.jobId,
+      required this.jobName,
+      required this.orgName});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +51,9 @@ class BusinessApplicantScreen extends StatelessWidget {
                           onTap: () {
                             Get.to(() => ApplicantDetails(
                                 applicantData: data['applicants'][index],
-                                jobId: jobId));
+                                jobId: jobId,
+                                jobName: jobName,
+                                orgName: orgName));
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

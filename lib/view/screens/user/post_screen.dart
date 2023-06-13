@@ -80,16 +80,18 @@ class _PostScreenState extends State<PostScreen> {
       String postId = Uuid().v1();
 
       Post post = Post(
-          datePosted: DateTime.now(),
-          description: description,
-          username: username,
-          likes: [],
-          postId: postId,
-          postUrl: fileUrl,
-          uid: uid,
-          type: 'photo',
-          profilePic: profilePic,
-          color: color);
+        datePosted: DateTime.now(),
+        description: description,
+        username: username,
+        likes: [],
+        postId: postId,
+        postUrl: fileUrl,
+        uid: uid,
+        type: 'photo',
+        profilePic: profilePic,
+        color: color,
+        postOwner: 'user',
+      );
 
       await FirebaseFirestore.instance.collection('posts').doc(postId).set(
             post.toJson(),
@@ -124,7 +126,8 @@ class _PostScreenState extends State<PostScreen> {
           uid: uid,
           type: 'photo',
           profilePic: profilePic,
-          color: '#424242');
+          color: '#424242',
+          postOwner: 'business');
 
       await FirebaseFirestore.instance.collection('posts').doc(postId).set(
             post.toJson(),

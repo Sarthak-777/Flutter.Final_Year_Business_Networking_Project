@@ -38,7 +38,7 @@ class _ProfileFeedState extends State<ProfileFeed> {
 
   Future<void> CommentsLength() async {
     String count = await homeController.commentsCount(widget.snap);
-    print(count);
+
     if (this.mounted) {
       setState(() {
         commentsCount = count;
@@ -55,7 +55,6 @@ class _ProfileFeedState extends State<ProfileFeed> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.snap);
     var user = authController.userData;
     return Container(
       decoration: BoxDecoration(
@@ -81,20 +80,28 @@ class _ProfileFeedState extends State<ProfileFeed> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30.0),
-                  topRight: Radius.circular(30.0),
-                ),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: double.infinity,
-                  child: Image.network(
-                    widget.snap['postUrl'],
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
+              widget.snap['type'] == 'forum'
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
+                      child: Text(widget.snap['description'],
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500)),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30.0),
+                        topRight: Radius.circular(30.0),
+                      ),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        width: double.infinity,
+                        child: Image.network(
+                          widget.snap['postUrl'],
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
@@ -177,17 +184,21 @@ class _ProfileFeedState extends State<ProfileFeed> {
                       const SizedBox(
                         width: 10,
                       ),
-                      Icon(Icons.circle, size: 5),
+                      widget.snap['type'] == 'forum'
+                          ? Text('')
+                          : Icon(Icons.circle, size: 5),
                       const SizedBox(
                         width: 10,
                       ),
-                      Text(widget.snap['description'],
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              color: iconBool
-                                  ? Colors.grey[200]
-                                  : Colors.grey[800],
-                              fontSize: 14)),
+                      widget.snap['type'] == 'forum'
+                          ? Text('')
+                          : Text(widget.snap['description'],
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: iconBool
+                                      ? Colors.grey[200]
+                                      : Colors.grey[800],
+                                  fontSize: 14)),
                     ],
                   )),
             ],

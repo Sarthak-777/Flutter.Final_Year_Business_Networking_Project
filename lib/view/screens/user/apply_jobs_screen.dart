@@ -2,7 +2,9 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:final_project_workconnect/functions/checkValidEmail.dart';
 import 'package:final_project_workconnect/functions/sendEmail.dart';
+import 'package:final_project_workconnect/functions/sendNotification.dart';
 import 'package:final_project_workconnect/view/screens/user/jobs_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +18,9 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class ApplyJobsScreen extends StatefulWidget {
   String jobId;
-  ApplyJobsScreen({
-    Key? key,
-    required this.jobId,
-  }) : super(key: key);
+  String jobName;
+  ApplyJobsScreen({Key? key, required this.jobId, required this.jobName})
+      : super(key: key);
 
   @override
   State<ApplyJobsScreen> createState() => _ApplyJobsScreenState();
@@ -181,23 +182,31 @@ class _ApplyJobsScreenState extends State<ApplyJobsScreen> {
                       _emailController.text.isNotEmpty &&
                       _usernameController.text.isNotEmpty &&
                       _summaryController.text.isNotEmpty) {
-                    File file = File(result!.files.single.path!);
-                    await sendEmail(
-                        name: _usernameController.text,
-                        email: _emailController.text,
-                        subject: "Job Application Sent",
-                        message:
-                            "Thank you for using workconnect. Your application has been sent");
-                    jobController.applyJob(
-                        FirebaseAuth.instance.currentUser!.uid,
-                        _usernameController.text,
-                        file,
-                        _phoneController.text,
-                        _emailController.text,
-                        _summaryController.text,
-                        widget.jobId);
-                    Get.snackbar("success", "Applied for Job");
-                    Get.off(() => JobsScreen());
+                    if (validEmail(_emailController.text)) {
+                      File file = File(result!.files.single.path!);
+                      await sendEmail(
+                          name: _usernameController.text,
+                          email: _emailController.text,
+                          subject: "Job Application Sent",
+                          message:
+                              "Thank you for using workconnect. Your application has been sent");
+                      jobController.applyJob(
+                          FirebaseAuth.instance.currentUser!.uid,
+                          _usernameController.text,
+                          file,
+                          _phoneController.text,
+                          _emailController.text,
+                          _summaryController.text,
+                          widget.jobId);
+                      sendNotification(FirebaseAuth.instance.currentUser!.uid,
+                          'You have applied for the job ${widget.jobName}');
+                      Get.snackbar("success", "Applied for Job");
+                      Get.off(() => JobsScreen());
+                    } else {
+                      Get.snackbar("Error", "Please enter valid email address",
+                          backgroundColor: Colors.white,
+                          colorText: Colors.black);
+                    }
                   } else {
                     // User canceled the picker
                     Get.snackbar("Error", "Please enter all the fields");

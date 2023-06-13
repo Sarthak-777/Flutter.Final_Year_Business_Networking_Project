@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project_workconnect/constants.dart';
 import 'package:final_project_workconnect/controller/auth_controller.dart';
 import 'package:final_project_workconnect/controller/home_controller.dart';
 import 'package:final_project_workconnect/functions/toColor.dart';
+import 'package:final_project_workconnect/view/screens/business/business_profile_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/comments_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/profile_screen.dart';
 import 'package:final_project_workconnect/view/widgets/drag_to_pop_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -57,6 +60,7 @@ class _FeedCardState extends State<FeedCard> {
   @override
   Widget build(BuildContext context) {
     var user = authController.userData;
+    print(widget.snap);
     return Padding(
       padding: const EdgeInsets.only(right: 20, left: 20, bottom: 20),
       child: Container(
@@ -103,8 +107,11 @@ class _FeedCardState extends State<FeedCard> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    Get.to(
-                                        ProfileScreen(uid: widget.snap['uid']));
+                                    widget.snap['postOwner'] == 'user'
+                                        ? Get.to(ProfileScreen(
+                                            uid: widget.snap['uid']))
+                                        : Get.to(BusinessProfileScreen(
+                                            uid: widget.snap['uid']));
                                   },
                                   child: Text(
                                     '${widget.snap['username']} has created a ${widget.snap['type']}',
@@ -133,13 +140,30 @@ class _FeedCardState extends State<FeedCard> {
                         ],
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.remove_circle_outline_outlined,
-                        color: iconBool ? Colors.grey[200] : Colors.grey[800],
-                      ),
-                    ),
+                    widget.snap['uid'] == FirebaseAuth.instance.currentUser!.uid
+                        ? IconButton(
+                            onPressed: () async {
+                              try {
+                                await FirebaseFirestore.instance
+                                    .collection('posts')
+                                    .doc(widget.snap['postId'])
+                                    .delete();
+                                Get.snackbar("Deletion Success",
+                                    "Post deleted successfully");
+                              } catch (e) {
+                                print(e);
+                                Get.snackbar(
+                                    "Deletion error", "Post deletion error");
+                              }
+                            },
+                            icon: Icon(
+                              Icons.remove_circle_outline_outlined,
+                              color: iconBool
+                                  ? Colors.grey[200]
+                                  : Colors.grey[800],
+                            ),
+                          )
+                        : Text(''),
                   ],
                 ),
                 widget.snap['type'] == 'forum'

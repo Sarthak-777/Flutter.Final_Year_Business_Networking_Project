@@ -19,6 +19,7 @@ class MyUser {
   List? usernameSubstring;
   List? followers;
   List? following;
+  List? recommendation;
 
   MyUser({
     required this.email,
@@ -38,6 +39,7 @@ class MyUser {
     required this.usernameSubstring,
     required this.followers,
     required this.following,
+    required this.recommendation,
   });
 
   MyUser.fromMap(Map<String, dynamic> map) {
@@ -67,6 +69,7 @@ class MyUser {
       'usernameSubstring': usernameSubstring,
       'followers': followers,
       'following': following,
+      'recommendation': recommendation,
     };
   }
 

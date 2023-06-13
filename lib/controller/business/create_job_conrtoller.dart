@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:final_project_workconnect/view/screens/user/dashboard_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:final_project_workconnect/model/job.dart';
@@ -40,8 +42,11 @@ class CreateJobController extends GetxController {
           .collection('jobs')
           .doc(id)
           .set(job.toJson());
+      Get.snackbar("Success", "Job Added",
+          backgroundColor: Colors.white, colorText: Colors.black);
     } else {
-      Get.snackbar("Error", "Please Enter all the fields");
+      Get.snackbar("Error", "Please Enter all the fields",
+          backgroundColor: Colors.white, colorText: Colors.black);
     }
   }
 }

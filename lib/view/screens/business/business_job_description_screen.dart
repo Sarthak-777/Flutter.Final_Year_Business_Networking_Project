@@ -248,6 +248,8 @@ class BusinessJobDescriptionScreen extends StatelessWidget {
                 onTap: () {
                   Get.to(() => BusinessApplicantScreen(
                         jobId: data['jobId'],
+                        jobName: data['jobTitle'],
+                        orgName: data['username'],
                       ));
                 },
                 child: ClipRRect(

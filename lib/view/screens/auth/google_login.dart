@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project_workconnect/constants.dart';
 import 'package:final_project_workconnect/controller/auth_controller.dart';
 import 'package:final_project_workconnect/view/widgets/textInputWidget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,12 +23,37 @@ class _GoogleLoginState extends State<GoogleLogin> {
   late String jobCategory = category[0];
   @override
   Widget build(BuildContext context) {
-    print(userData.email);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Additional Information'),
-      ),
+          title: Text('Additional Information'),
+          leading: Builder(builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () async {
+                User? user = FirebaseAuth.instance.currentUser;
+                print(user?.email);
+
+                if (user != null) {
+                  try {
+                    FirebaseFirestore.instance
+                        .collection("email")
+                        .doc(user.email)
+                        .delete();
+                    await user.delete();
+                    Get.snackbar("Error", "Google Login Error");
+                    FirebaseAuth.instance.signOut();
+                    // You can perform additional actions after account deletion if needed.
+                  } catch (e) {
+                    print(e);
+                    // Handle any error that occurs during deletion.
+                  }
+                } else {
+                  print('No user is currently signed in.');
+                }
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          })),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(

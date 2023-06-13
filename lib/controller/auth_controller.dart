@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:final_project_workconnect/constants.dart';
+import 'package:final_project_workconnect/functions/checkValidEmail.dart';
 import 'package:final_project_workconnect/model/business.dart';
 import 'package:final_project_workconnect/model/user.dart';
 import 'package:final_project_workconnect/view/screens/auth/google_login.dart';
@@ -46,7 +48,7 @@ class AuthController extends GetxController {
         Get.offAll(() => DashboardScreen());
         // Get.offAll(() => LoginScreen());
         // FirebaseAuth.instance.signOut();
-      } else {
+      } else if (user.displayName == "employer") {
         Get.offAll(() => LandingScreen());
       }
     }
@@ -61,6 +63,37 @@ class AuthController extends GetxController {
         .collection("users")
         .doc(user.uid)
         .get();
+    final userData = userDoc.data() as dynamic;
+    String uid = userDoc['uid'];
+    String username = userDoc['username'];
+    String jobCategory = userDoc['jobCategory'];
+    String profilePhoto = userDoc['profilePhoto'];
+    String country = userDoc['country'];
+    String city = userDoc['city'];
+    String jobDesc = userDoc['jobDesc'];
+    String color = userDoc['color'];
+    List skills = userDoc['skills'];
+    List followers = userDoc['followers'];
+    List following = userDoc['following'];
+
+    return _userData.value = {
+      'uid': uid,
+      'followers': followers,
+      'following': following,
+      'profilePhoto': profilePhoto,
+      'username': username,
+      'country': country,
+      'jobCategory': jobCategory,
+      'city': city,
+      'jobDesc': jobDesc,
+      'color': color,
+      'skills': skills,
+    };
+  }
+
+  getUserDataWithUid(String userId) async {
+    var userDoc =
+        await FirebaseFirestore.instance.collection("users").doc(userId).get();
     final userData = userDoc.data() as dynamic;
     String uid = userDoc['uid'];
     String username = userDoc['username'];
@@ -165,7 +198,8 @@ class AuthController extends GetxController {
               .collection('email')
               .doc(email)
               .set({"email": email});
-          Get.offAll(() => BusinessHomeScreen());
+          Get.offAll(() => LandingScreen());
+
           // Get.to(VerifyScreen());
         } on FirebaseAuthException catch (e) {
           Get.snackbar("Error", e.code);
@@ -191,11 +225,16 @@ class AuthController extends GetxController {
           work.isNotEmpty &&
           jobCategory.isNotEmpty) {
         try {
+          String pattern = r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$';
+          RegExp emailRegex = RegExp(pattern);
           RegExp regex = RegExp(
               r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
           if (!regex.hasMatch(password)) {
             Get.snackbar("Error",
                 "Password should atlease have 1 capital letter, a symbol and a number. Please try again",
+                colorText: Colors.black, backgroundColor: Colors.white);
+          } else if (!emailRegex.hasMatch(email)) {
+            Get.snackbar("Error", "Please enter valid email address",
                 colorText: Colors.black, backgroundColor: Colors.white);
           } else {
             UserCredential cred = await FirebaseAuth.instance
@@ -223,6 +262,7 @@ class AuthController extends GetxController {
               usernameSubstring: usernameSubstring,
               followers: [],
               following: [],
+              recommendation: [],
             );
 
             await FirebaseFirestore.instance
@@ -258,44 +298,80 @@ class AuthController extends GetxController {
       String working,
       String jobCategory) async {
     List usernameSubstring = createSubString(username);
-
-    MyUser user = MyUser(
-      email: email,
-      username: username,
-      password: "google auth",
-      country: country,
-      city: city,
-      phoneNo: phoneNo,
-      working: working,
-      jobCategory: jobCategory,
-      jobDesc: '',
-      profilePhoto: '',
-      uid: uid,
-      skills: [],
-      type: 'job-seeker',
-      color: 'red',
-      usernameSubstring: usernameSubstring,
-      followers: [],
-      following: [],
-    );
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .set(user.toMap());
-      Get.off(DashboardScreen());
-    } catch (e) {
-      Get.snackbar("error", e.toString());
-      ;
+    if (username.isNotEmpty &
+        country.isNotEmpty &
+        city.isNotEmpty &
+        phoneNo.isNotEmpty &
+        working.isNotEmpty &
+        jobCategory.isNotEmpty) {
+      MyUser user = MyUser(
+          email: email,
+          username: username,
+          password: "google auth",
+          country: country,
+          city: city,
+          phoneNo: phoneNo,
+          working: working,
+          jobCategory: jobCategory,
+          jobDesc: '',
+          profilePhoto:
+              'https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System/blob/main/assets/person.jpg?raw=true',
+          uid: uid,
+          skills: [],
+          type: 'job-seeker',
+          color: 'red',
+          usernameSubstring: usernameSubstring,
+          followers: [],
+          following: [],
+          recommendation: []);
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .set(user.toMap());
+        Get.off(DashboardScreen());
+      } catch (e) {
+        Get.snackbar("error", e.toString());
+      }
+    } else {
+      Get.snackbar("Error", "Please enter all fields");
     }
   }
 
+  Future<bool> checkEmailExists(String email) async {
+    final CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('users');
+
+    final QuerySnapshot snapshot =
+        await usersCollection.where('email', isEqualTo: email).limit(1).get();
+
+    return snapshot.size > 0;
+  }
+
+  Future<bool> checkBusinessEmailExists(String email) async {
+    final CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('business');
+
+    final QuerySnapshot snapshot =
+        await usersCollection.where('email', isEqualTo: email).limit(1).get();
+
+    return snapshot.size > 0;
+  }
+
   void loginWithEmalAndPassword(String email, String password) async {
+    bool emailExists = await checkEmailExists(email);
     try {
       if (email.isNotEmpty && password.isNotEmpty) {
-        await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password);
-        Get.offAll(() => DashboardScreen());
+        if (emailExists) {
+          if (validEmail(email)) {
+            await FirebaseAuth.instance
+                .signInWithEmailAndPassword(email: email, password: password);
+            Get.offAll(() => DashboardScreen());
+          }
+        } else {
+          Get.snackbar("Error", "Email does not exist",
+              backgroundColor: Colors.white, colorText: Colors.black);
+        }
       } else {
         Get.snackbar("Error", "Fill both the forms below");
       }
@@ -305,11 +381,18 @@ class AuthController extends GetxController {
   }
 
   void businessLoginWithEmailAndPassword(String email, String password) async {
+    bool emailExists = await checkBusinessEmailExists(email);
+
     try {
       if (email.isNotEmpty && password.isNotEmpty) {
-        await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password);
-        Get.offAll(() => LandingScreen());
+        if (emailExists) {
+          await FirebaseAuth.instance
+              .signInWithEmailAndPassword(email: email, password: password);
+          Get.offAll(() => LandingScreen());
+        } else {
+          Get.snackbar("Error", "Email does not exist",
+              backgroundColor: Colors.white, colorText: Colors.black);
+        }
       } else {
         Get.snackbar("Error", "Fill both the forms below");
       }
@@ -329,21 +412,36 @@ class AuthController extends GetxController {
           accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
       UserCredential userCred =
           await FirebaseAuth.instance.signInWithCredential(cred);
-      await FirebaseFirestore.instance
-          .collection('email')
-          .doc(userCred.user!.email)
-          .set({"email": userCred.user!.email});
+
       try {
-        for (var data in allData) {
-          if (userCred.user!.email == (data as Map)['email']) {
-            Get.off(() => DashboardScreen());
-            break;
-          } else {
-            Get.to(() => GoogleLogin(), arguments: [userCred]);
-          }
+        DocumentSnapshot snapshot = await FirebaseFirestore.instance
+            .collection('email')
+            .doc(userCred.user!.email)
+            .get();
+        if (snapshot.exists) {
+          print('Document exists.');
+          Get.offAll(() => DashboardScreen());
+        } else {
+          await FirebaseFirestore.instance
+              .collection('email')
+              .doc(userCred.user!.email)
+              .set({"email": userCred.user!.email});
+          Get.to(() => GoogleLogin(), arguments: [userCred]);
+
+          print('Document does not exist.');
         }
+        // print(userCred.user!.email);
+        // for (var data in allData) {
+        //   print((data as Map)['email']);
+
+        //   if (userCred.user!.email == (data as Map)['email']) {
+        //     Get.offAll(() => DashboardScreen());
+        //   } else {
+        //     Get.to(() => GoogleLogin(), arguments: [userCred]);
+        //   }
+        // }
       } catch (e) {
-        log(e.toString());
+        // log(e.toString());
       }
     } catch (e) {
       print(e);

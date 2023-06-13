@@ -132,20 +132,19 @@ List<Widget> businessScreenItems = [
   BusinessProfileScreen(uid: ''),
 ];
 
-bool iconBool = false;
+bool iconBool = true;
 IconData iconLight = Icons.wb_sunny;
 IconData iconDark = Icons.nights_stay;
 ThemeData lightTheme = ThemeData(
-  primaryColor: Colors.grey[100],
-  primaryColorLight: Colors.grey[100],
-  primaryColorDark: Colors.black,
-  brightness: Brightness.light,
-  canvasColor: Colors.grey[200],
-  indicatorColor: Colors.black,
-  appBarTheme: AppBarTheme(
-    color: Colors.blueGrey[900],
-  ),
-);
+    primaryColor: Colors.black,
+    primaryColorLight: Colors.black,
+    brightness: Brightness.dark,
+    primaryColorDark: Colors.black,
+    indicatorColor: Colors.white,
+    canvasColor: Colors.black,
+
+    // next line is important!
+    appBarTheme: AppBarTheme(color: Colors.black));
 
 ThemeData darkTheme = ThemeData(
     primaryColor: Colors.black,

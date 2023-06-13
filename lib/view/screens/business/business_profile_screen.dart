@@ -88,7 +88,6 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   @override
   Widget build(BuildContext context) {
     Uint8List? _file;
-    print(isUser);
 
     return GetBuilder<BusinessController>(
         builder: (controller) => controller.business.isEmpty
@@ -316,35 +315,37 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                                   const SizedBox(
                                     height: 6,
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.people_alt_outlined,
-                                        size: 12,
-                                        color: mainColor,
-                                      ),
-                                      const SizedBox(width: 3),
-                                      Text(
-                                        "0 Employees in WorkConnect",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.blueGrey[100],
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  // Row(
+                                  //   mainAxisAlignment: MainAxisAlignment.center,
+                                  //   children: [
+                                  //     Icon(
+                                  //       Icons.people_alt_outlined,
+                                  //       size: 12,
+                                  //       color: mainColor,
+                                  //     ),
+                                  //     const SizedBox(width: 3),
+                                  //     Text(
+                                  //       "0 Employees in WorkConnect",
+                                  //       style: TextStyle(
+                                  //         fontSize: 14,
+                                  //         color: Colors.blueGrey[100],
+                                  //         fontWeight: FontWeight.w400,
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
                                   const SizedBox(height: 5),
-                                  InkWell(
-                                      onTap: () {
-                                        Get.to(
-                                          () => EditBusinessProfileScreen(),
-                                        );
-                                      },
-                                      child: Icon(Icons.settings,
-                                          size: 16,
-                                          color: Colors.blueGrey[100])),
+                                  !isUser
+                                      ? InkWell(
+                                          onTap: () {
+                                            Get.to(
+                                              () => EditBusinessProfileScreen(),
+                                            );
+                                          },
+                                          child: Icon(Icons.settings,
+                                              size: 16,
+                                              color: Colors.blueGrey[100]))
+                                      : Text(''),
                                   const SizedBox(height: 10),
                                   Row(
                                     children: [
@@ -578,26 +579,36 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                                               ConnectionState.waiting) {
                                             return Text("Loading...");
                                           }
-                                          return SizedBox(
-                                            height: 310,
-                                            width: 300,
-                                            child: ListView.builder(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 0),
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount:
-                                                  snapshot.data!.docs.length,
-                                              itemBuilder: (context, index) =>
-                                                  SizedBox(
-                                                height: 200,
-                                                width: 300,
-                                                child: ProfileFeed(
-                                                    snap: snapshot
-                                                        .data.docs[index]
-                                                        .data()),
+                                          if (snapshot.data.docs.isEmpty) {
+                                            return Container(
+                                                width: 500,
+                                                child: Text("No Posts yet"));
+                                          } else {
+                                            return SizedBox(
+                                              height: 500,
+                                              width: 400,
+                                              child: ListView.builder(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 0),
+                                                scrollDirection: Axis.vertical,
+                                                itemCount:
+                                                    snapshot.data!.docs.length,
+                                                itemBuilder: (context, index) =>
+                                                    SizedBox(
+                                                  width: 400,
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 10),
+                                                    child: ProfileFeed(
+                                                        snap: snapshot
+                                                            .data.docs[index]
+                                                            .data()),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          );
+                                            );
+                                          }
                                         },
                                       )
                                     ],

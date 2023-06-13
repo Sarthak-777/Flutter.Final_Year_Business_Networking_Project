@@ -36,7 +36,8 @@ class _ForumScreenState extends State<ForumScreen> {
           uid: uid,
           type: 'forum',
           profilePic: profilePic,
-          color: color);
+          color: color,
+          postOwner: 'user');
 
       await FirebaseFirestore.instance.collection('posts').doc(postId).set(
             post.toJson(),
@@ -67,7 +68,8 @@ class _ForumScreenState extends State<ForumScreen> {
           uid: uid,
           type: 'forum',
           profilePic: profilePic,
-          color: '#424242');
+          color: '#424242',
+          postOwner: 'business');
 
       await FirebaseFirestore.instance.collection('posts').doc(postId).set(
             post.toJson(),

@@ -32,12 +32,10 @@ class BusinessController extends GetxController {
     String phoneNo = businessDoc['phoneNo'];
 
     String jobDesc = businessDoc['jobDesc'];
+    List followers = businessDoc['followers'];
 
-    int followers = 0;
-    int following = 0;
     _business.value = {
-      'followers': followers.toString(),
-      'following': following.toString(),
+      'followers': followers,
       'profilePhoto': profilePhoto,
       'orgName': orgName,
       'jobCategory': jobCategory,

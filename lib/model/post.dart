@@ -9,7 +9,7 @@ class Post {
   String type;
   String profilePic;
   String color;
-
+  String postOwner;
   Post(
       {required this.description,
       required this.likes,
@@ -20,7 +20,8 @@ class Post {
       required this.username,
       required this.type,
       required this.profilePic,
-      required this.color});
+      required this.color,
+      required this.postOwner});
 
   Map<String, dynamic> toJson() {
     return {
@@ -34,6 +35,7 @@ class Post {
       'type': type,
       'profilePic': profilePic,
       'color': color,
+      'postOwner': postOwner
     };
   }
 }

@@ -24,6 +24,7 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
   ThemeController themeController = Get.put(ThemeController());
   User? currentBusiness;
   Business? thisBusinessModel;
+
   int pendingCount = 0;
   int acceptCount = 0;
   int rejectCount = 0;
@@ -121,7 +122,7 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
                               color: iconBool ? Colors.white : Colors.black,
                             ),
                           ),
-                          Row(children: [
+                          Column(children: [
                             IconButton(
                               color: iconBool ? Colors.white : kPrimaryColor,
                               onPressed: () {
@@ -143,73 +144,87 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
                         ],
                       ),
                     ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    Column(
+                      // crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                            height: 150,
-                            width: 150,
-                            decoration: new BoxDecoration(
-                              borderRadius: new BorderRadius.circular(16.0),
-                              color: Colors.yellow[900],
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text("Pending Applicants",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w700)),
-                                SizedBox(height: 20),
-                                Text(pendingCount.toString(),
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 22)),
-                              ],
-                            )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          child: Container(
+                              height: 120,
+                              width: 400,
+                              decoration: new BoxDecoration(
+                                borderRadius: new BorderRadius.circular(16.0),
+                                color: Colors.yellow[900],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("Pending Applicants",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700)),
+                                  SizedBox(height: 20),
+                                  Text(pendingCount.toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 22)),
+                                ],
+                              )),
+                        ),
                         const SizedBox(
                           width: 30,
                         ),
-                        Container(
-                            height: 150,
-                            width: 150,
-                            decoration: new BoxDecoration(
-                              borderRadius: new BorderRadius.circular(16.0),
-                              color: Colors.green[900],
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text("Accepted Applicants",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w700)),
-                                SizedBox(height: 20),
-                                Text(acceptCount.toString(),
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 22)),
-                              ],
-                            )),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          child: Container(
+                              height: 120,
+                              width: 400,
+                              decoration: new BoxDecoration(
+                                borderRadius: new BorderRadius.circular(16.0),
+                                color: Colors.green[900],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("Accepted Applicants",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700)),
+                                  SizedBox(height: 20),
+                                  Text(acceptCount.toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 22)),
+                                ],
+                              )),
+                        ),
                       ],
                     ),
-                    Container(
-                        height: 150,
-                        width: 150,
-                        decoration: new BoxDecoration(
-                          borderRadius: new BorderRadius.circular(16.0),
-                          color: Colors.red[900],
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Rejected Applicants",
-                                style: TextStyle(fontWeight: FontWeight.w700)),
-                            SizedBox(height: 20),
-                            Text(rejectCount.toString(),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 22)),
-                          ],
-                        )),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      child: Container(
+                          height: 120,
+                          width: 400,
+                          decoration: new BoxDecoration(
+                            borderRadius: new BorderRadius.circular(16.0),
+                            color: Colors.red[900],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Rejected Applicants",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.w700)),
+                              SizedBox(height: 20),
+                              Text(rejectCount.toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 22)),
+                            ],
+                          )),
+                    ),
                     const SizedBox(
                       width: 30,
                     ),

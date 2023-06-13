@@ -29,9 +29,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      themeMode: ThemeMode.light,
+      theme: darkTheme,
+      // darkTheme: darkTheme,
+      themeMode: ThemeMode.dark,
       initialRoute: '/',
       getPages: [
         GetPage(name: '/login', page: () => LoginScreen()),

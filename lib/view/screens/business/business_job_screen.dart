@@ -38,8 +38,8 @@ class _BusinessJobScreenState extends State<BusinessJobScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print(skillController.userSkills);
-    print(authController.userData['orgName']);
+    print(skillController.userSkills);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Create Job "),
@@ -57,7 +57,12 @@ class _BusinessJobScreenState extends State<BusinessJobScreen> {
             authController.userData['orgName'],
             authController.userData['uid'],
           );
-          Get.snackbar("Success", "Job Added");
+          _titleController.clear();
+          _aboutController.clear();
+          _responsibilityController.clear();
+          _experienceController.clear();
+          val = jobTime[0];
+          type = jobType[0];
         },
         label: Text("Complete"),
       ),
@@ -204,7 +209,7 @@ class _BusinessJobScreenState extends State<BusinessJobScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       isLoading = true;
-                      List data =
+                      List eacdata =
                           await skillController.apicall(_skillController.text);
                       skillController.setSkillData();
                     },

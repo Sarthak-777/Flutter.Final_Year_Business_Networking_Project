@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project_workconnect/controller/theme_controller.dart';
 import 'package:final_project_workconnect/model/FirebaseHelper.dart';
+import 'package:final_project_workconnect/view/screens/user/nofifications_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -80,19 +82,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           IconButton(
                             color: iconBool ? Colors.white : kPrimaryColor,
                             onPressed: () {
-                              themeController.changeTheme();
-                              setState(() {
-                                iconBool = !iconBool;
-                              });
-                              if (iconBool == true) {
-                                Get.changeTheme(darkTheme);
-                              } else {
-                                Get.changeTheme(lightTheme);
-                              }
+                              Get.to(() => NotificationScreen(
+                                  uid: FirebaseAuth.instance.currentUser!.uid));
                             },
-                            icon: Icon(
-                              iconBool ? iconDark : iconLight,
-                            ),
+                            icon: Icon(Icons.notifications_on),
                           ),
                           InkWell(
                             onTap: () {
@@ -124,24 +117,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        userData['following'].isEmpty
+                            ? Text('')
+                            : InkWell(
+                                onTap: () async {
+                                  setState(() {
+                                    stream = FirebaseFirestore.instance
+                                        .collection('posts')
+                                        .where("uid",
+                                            whereIn: userData['following'])
+                                        .snapshots();
+                                  });
+                                },
+                                child: Text('Following')),
                         InkWell(
                             onTap: () async {
                               setState(() {
                                 stream = FirebaseFirestore.instance
                                     .collection('posts')
-                                    .where("uid",
-                                        whereIn: userData['following'])
-                                    .snapshots();
-                              });
-                            },
-                            child: Text('Following')),
-                        InkWell(
-                            onTap: () async {
-                              setState(() {
-                                stream = FirebaseFirestore.instance
-                                    .collection('posts')
-                                    .where("uid",
-                                        whereNotIn: userData['following'])
                                     .snapshots();
                               });
                             },
@@ -167,6 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ConnectionState.waiting) {
                                 return Text("Loading...");
                               }
+
                               return Container(
                                 height: MediaQuery.of(context).size.height,
                                 child: ListView.builder(

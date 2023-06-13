@@ -2,8 +2,10 @@ import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project_workconnect/constants.dart';
+import 'package:final_project_workconnect/functions/sendNotification.dart';
 import 'package:final_project_workconnect/view/screens/business/business_job_posting_screen.dart';
 import 'package:final_project_workconnect/view/screens/business/business_landing_screen.dart';
+import 'package:final_project_workconnect/view/screens/user/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -12,13 +14,21 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ApplicantDetails extends StatelessWidget {
   var applicantData;
+
   String jobId;
+  String jobName;
+  String orgName;
   ApplicantDetails(
-      {super.key, required this.applicantData, required this.jobId});
+      {super.key,
+      required this.applicantData,
+      required this.jobId,
+      required this.jobName,
+      required this.orgName});
 
   @override
   Widget build(BuildContext context) {
-    print(applicantData['status']);
+    print(applicantData);
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Applicant Details'),
@@ -107,6 +117,26 @@ class ApplicantDetails extends StatelessWidget {
                   ),
                 ),
               ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: InkWell(
+                  onTap: () async {
+                    Get.to(() => ProfileScreen(uid: applicantData['uid']));
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      color: Colors.orange[700],
+                      width: MediaQuery.of(context).size.width,
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: const Text("View Applicant Profile",
+                          style: TextStyle(fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ),
+              ),
               applicantData['status'] != 'pending'
                   ? Text('Applicant Accepted')
                   : Column(
@@ -157,6 +187,8 @@ class ApplicantDetails extends StatelessWidget {
                                       }
                                     ])
                                   });
+                                  sendNotification(applicantData['uid'],
+                                      "Your application has been acccepted for position ${jobName} on company ${orgName}");
                                   Get.snackbar("success", "Applicant Accepted");
                                   Get.to(() => LandingScreen());
                                 }
@@ -228,6 +260,8 @@ class ApplicantDetails extends StatelessWidget {
                                       }
                                     ])
                                   });
+                                  sendNotification(applicantData['uid'],
+                                      "Your application has been rejected for position ${jobName} on company ${orgName}");
                                   Get.snackbar("success", "Applicant Rejected");
                                   Get.to(() => LandingScreen());
                                 }
@@ -247,7 +281,7 @@ class ApplicantDetails extends StatelessWidget {
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
             ],

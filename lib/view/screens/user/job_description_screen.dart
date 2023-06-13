@@ -262,8 +262,9 @@ class JobDescriptionScreen extends StatelessWidget {
                                 horizontal: 20, vertical: 10),
                             child: InkWell(
                               onTap: () {
-                                Get.to(() =>
-                                    ApplyJobsScreen(jobId: data['jobId']));
+                                Get.to(() => ApplyJobsScreen(
+                                    jobId: data['jobId'],
+                                    jobName: data['jobTitle']));
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),

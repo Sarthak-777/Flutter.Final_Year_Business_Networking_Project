@@ -7,6 +7,7 @@ import 'package:final_project_workconnect/constants.dart';
 import 'package:final_project_workconnect/controller/auth_controller.dart';
 import 'package:final_project_workconnect/controller/profile_controller.dart';
 import 'package:final_project_workconnect/functions/getAsync.dart';
+import 'package:final_project_workconnect/functions/getListOfUsers.dart';
 import 'package:final_project_workconnect/functions/pickImage.dart';
 import 'package:final_project_workconnect/functions/toColor.dart';
 import 'package:final_project_workconnect/view/screens/user/edit_profile_screen.dart';
@@ -37,6 +38,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool data = false;
   bool isUser = false;
   bool isFollowing = false;
+  bool isRecommended = false;
+  var userData;
+  List recommend = [];
 
   @override
   void initState() {
@@ -49,8 +53,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     profileController.updateUserId(uid);
-    authController.getUserData();
+    getUserData();
     getIsFollowing();
+    getIsRecommended();
     colorData();
   }
 
@@ -61,11 +66,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var data =
         await FirebaseFirestore.instance.collection("users").doc(uid).get();
     List followers = data.data()!['followers'];
+
     if (followers.contains(FirebaseAuth.instance.currentUser!.uid)) {
       setState(() {
         isFollowing = true;
       });
     }
+  }
+
+  getIsRecommended() async {
+    // var userData = await authController.getUserData();
+    var data =
+        await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    recommend = data.data()!['recommendation'];
+
+    if (recommend.contains(FirebaseAuth.instance.currentUser!.uid)) {
+      setState(() {
+        isRecommended = true;
+      });
+    }
+  }
+
+  void getUserData() async {
+    userData = await authController.getUserData();
   }
 
   void colorData() async {
@@ -130,153 +153,170 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(50),
                                     child: InkWell(
                                       onTap: () {
-                                        Get.bottomSheet(
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            child: Container(
-                                              height: 200,
-                                              color: Colors.white,
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  TextButton(
-                                                    onPressed: () async {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      XFile? pickedFile =
-                                                          await ImagePicker()
-                                                              .pickImage(
-                                                                  source:
-                                                                      ImageSource
-                                                                          .camera);
-                                                      if (pickedFile != null) {
-                                                        cropImage(pickedFile);
-                                                      }
-                                                    },
-                                                    child: Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      child: Text(
-                                                        "Upload from Camera,",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black),
-                                                      ),
+                                        !isUser
+                                            ? Get.bottomSheet(
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: Container(
+                                                    height: 200,
+                                                    color: Colors.white,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        TextButton(
+                                                          onPressed: () async {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            XFile? pickedFile =
+                                                                await ImagePicker()
+                                                                    .pickImage(
+                                                                        source:
+                                                                            ImageSource.camera);
+                                                            if (pickedFile !=
+                                                                null) {
+                                                              cropImage(
+                                                                  pickedFile);
+                                                            }
+                                                          },
+                                                          child: Container(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            child: Text(
+                                                              "Upload from Camera,",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                          ),
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                                  textStyle:
+                                                                      const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          )),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () async {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            XFile? pickedFile =
+                                                                await ImagePicker()
+                                                                    .pickImage(
+                                                                        source:
+                                                                            ImageSource.gallery);
+                                                            if (pickedFile !=
+                                                                null) {
+                                                              cropImage(
+                                                                  pickedFile);
+                                                            }
+                                                          },
+                                                          child: Container(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            child: Text(
+                                                              "Upload from Gallery,",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                          ),
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                                  textStyle:
+                                                                      const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          )),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Get.to(() => PhotoViewScreen(
+                                                                image: controller
+                                                                        .user[
+                                                                    'profilePhoto'],
+                                                                uid: uid));
+                                                          },
+                                                          child: Container(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            child: Text(
+                                                              "View Image",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                          ),
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                                  textStyle:
+                                                                      const TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          )),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child: Container(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            child: Text(
+                                                              "X Cancel",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .red),
+                                                            ),
+                                                          ),
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                                  textStyle:
+                                                                      const TextStyle(
+                                                            color: Colors.red,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          )),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    style: TextButton.styleFrom(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    )),
                                                   ),
-                                                  TextButton(
-                                                    onPressed: () async {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      XFile? pickedFile =
-                                                          await ImagePicker()
-                                                              .pickImage(
-                                                                  source: ImageSource
-                                                                      .gallery);
-                                                      if (pickedFile != null) {
-                                                        cropImage(pickedFile);
-                                                      }
-                                                    },
-                                                    child: Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      child: Text(
-                                                        "Upload from Gallery,",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ),
-                                                    style: TextButton.styleFrom(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    )),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Get.to(() =>
-                                                          PhotoViewScreen(
-                                                              image: controller
-                                                                      .user[
-                                                                  'profilePhoto'],
-                                                              uid: uid));
-                                                    },
-                                                    child: Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      child: Text(
-                                                        "View Image",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ),
-                                                    style: TextButton.styleFrom(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    )),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      child: Text(
-                                                        "X Cancel",
-                                                        style: TextStyle(
-                                                            color: Colors.red),
-                                                      ),
-                                                    ),
-                                                    style: TextButton.styleFrom(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                      color: Colors.red,
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    )),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        );
+                                                ),
+                                              )
+                                            : Text('');
                                       },
                                       child: ProfilePictureWidget(uid: uid),
                                     ),
@@ -326,15 +366,84 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ],
                                   ),
                                   const SizedBox(height: 5),
-                                  InkWell(
-                                      onTap: () {
-                                        Get.to(
-                                          () => EditProfileScreen(),
-                                        );
-                                      },
-                                      child: Icon(Icons.settings,
-                                          size: 16,
-                                          color: Colors.blueGrey[100])),
+                                  !isUser
+                                      ? InkWell(
+                                          onTap: () {
+                                            Get.to(
+                                              () => EditProfileScreen(),
+                                            );
+                                          },
+                                          child: Icon(Icons.settings,
+                                              size: 16,
+                                              color: Colors.blueGrey[100]))
+                                      : FirebaseAuth
+                                                  .instance.currentUser!.uid ==
+                                              uid
+                                          ? Text('')
+                                          : InkWell(
+                                              onTap: () async {
+                                                var snap =
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('users')
+                                                        .doc(uid)
+                                                        .get();
+
+                                                List recommendation =
+                                                    (snap.data()! as dynamic)[
+                                                        'recommendation'];
+
+                                                if (recommendation.contains(
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid)) {
+                                                  try {
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                      ..collection('users')
+                                                          .doc(uid)
+                                                          .update({
+                                                        'recommendation':
+                                                            FieldValue
+                                                                .arrayRemove([
+                                                          FirebaseAuth.instance
+                                                              .currentUser!.uid
+                                                        ])
+                                                      });
+                                                  } catch (e) {
+                                                    print(e);
+                                                  }
+                                                } else {
+                                                  FirebaseFirestore.instance
+                                                      .collection('users')
+                                                      .doc(uid)
+                                                      .update({
+                                                    "recommendation":
+                                                        FieldValue.arrayUnion([
+                                                      FirebaseAuth.instance
+                                                          .currentUser!.uid
+                                                    ])
+                                                  });
+                                                  setState(() {
+                                                    isRecommended =
+                                                        !isRecommended;
+                                                  });
+                                                }
+                                              },
+                                              child: isRecommended
+                                                  ? Text(
+                                                      'Remove Recommendation',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      ))
+                                                  : Text('Recommend this user',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      )),
+                                            ),
                                   const SizedBox(height: 10),
                                   Row(
                                     children: [
@@ -347,14 +456,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                       ),
                                       const SizedBox(width: 10),
-                                      Text(
-                                        '0',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.blueGrey[100],
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      )
+                                      controller.user['followers'].isEmpty
+                                          ? Text(
+                                              '0',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.blueGrey[100],
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            )
+                                          : Text(
+                                              controller
+                                                  .user['followers'].length
+                                                  .toString(),
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.blueGrey[100],
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            )
                                     ],
                                   ),
                                   isUser
@@ -440,13 +560,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ])),
 
                             // const SizedBox(width: 100),
-                            InkWell(
-                              onTap: () => {FirebaseAuth.instance.signOut()},
-                              child: Icon(
-                                Icons.logout_outlined,
-                                color: Colors.blueGrey[100],
-                              ),
-                            ),
+                            !isUser
+                                ? InkWell(
+                                    onTap: () =>
+                                        {FirebaseAuth.instance.signOut()},
+                                    child: Icon(
+                                      Icons.logout_outlined,
+                                      color: Colors.blueGrey[100],
+                                    ),
+                                  )
+                                : SizedBox(width: 10),
                           ],
                         ),
                       ),
@@ -477,7 +600,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   const SizedBox(height: 10),
                                   DescriptionTextWidget(
-                                    text: controller.user['jobDesc'] == ''
+                                    text: controller.user['jobDesc'] == ""
                                         ? 'No user description yet'
                                         : controller.user['jobDesc'],
                                   ),
@@ -554,6 +677,77 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     children: [JobExperienceWidget(uid: uid)],
                                   ),
                                 ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 30),
+                                  child: Text("Recommendations",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w800,
+                                          color: iconBool
+                                              ? Colors.grey[200]
+                                              : Colors.black)),
+                                ),
+                                const SizedBox(height: 10),
+                                recommend.isNotEmpty
+                                    ? StreamBuilder(
+                                        stream: getUsersData(recommend),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                          // print(snapshot.data[0].data());
+                                          List recommendData = snapshot.data;
+                                          print(recommendData[0].data());
+
+                                          // return Container();
+                                          return Column(
+                                            children: [
+                                              ListView.builder(
+                                                shrinkWrap: true,
+                                                itemCount: recommendData.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  var item =
+                                                      recommendData[index]
+                                                          .data();
+                                                  print(item);
+                                                  String title =
+                                                      item['username'] != null
+                                                          ? item['username']
+                                                          : item['orgName'];
+                                                  String image =
+                                                      item['profilePhoto'];
+
+                                                  return ListTile(
+                                                    leading: Image.network(
+                                                      image,
+                                                      width:
+                                                          48, // Adjust the width as needed
+                                                      height:
+                                                          48, // Adjust the height as needed
+                                                    ),
+                                                    title: Text(title),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        })
+                                    : Center(
+                                        child: Text(
+                                            'No Recommendations in profile'))
                               ],
                             ),
                           ],
