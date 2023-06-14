@@ -4,6 +4,11 @@ The project is a mobile-based project which will be created using Flutter on the
 
 ## Getting Started
 
-Clone the following command on your terminal:
+1. Clone the following command on your terminal:
+   https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System.git
 
-1. https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System.git
+2. Install the required dependancies with the command:
+   flutter pub get
+
+3. Run the flutter application on your device:
+   flutter run
