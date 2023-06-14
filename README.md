@@ -17,6 +17,11 @@ The project is a mobile-based project which will be created using Flutter on the
 
 <span><img src = "https://img.shields.io/badge/-Flutter-blue" height="40"></span>
 <span><img src = "https://img.shields.io/badge/-Firebase-yellow" height="40"></span>
-<span><img src = "https://img.shields.io/badge/-Firestore-yellowgreen" height="40"></span>
-<span><img src = "https://img.shields.io/badge/-GetX-blue" height="40"></span>
-<span><img src = "https://img.shields.io/badge/-Dart-blue" height="40"></span>
+<span><img src = "https://img.shields.io/badge/-Firestore-yellow" height="40"></span>
+<span><img src = "https://img.shields.io/badge/-GetX-red" height="40"></span>
+<span><img src = "https://img.shields.io/badge/-Dart-red" height="40"></span>
+<span><img src = "https://img.shields.io/badge/-VSCode-blue" height="40"></span>
+
+## Contributors
+
+[Sarthak Bajracharya](https://github.com/Sarthak-777)
