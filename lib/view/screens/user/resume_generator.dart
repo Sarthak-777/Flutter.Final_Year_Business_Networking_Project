@@ -148,6 +148,12 @@ class _ResumeFormState extends State<ResumeForm> {
                       _formKey.currentState!.save();
                       // Call the function to generate the resume
                       await generateResume();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Please fill in all the fields'),
+                        ),
+                      );
                     }
                   },
                   child: Text('Generate Resume'),
