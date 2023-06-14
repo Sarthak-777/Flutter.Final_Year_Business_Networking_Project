@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project_workconnect/constants.dart';
 import 'package:final_project_workconnect/controller/auth_controller.dart';
 import 'package:final_project_workconnect/controller/profile_controller.dart';
+import 'package:final_project_workconnect/functions/checkUidExists.dart';
 import 'package:final_project_workconnect/functions/getAsync.dart';
 import 'package:final_project_workconnect/functions/getListOfUsers.dart';
 import 'package:final_project_workconnect/functions/pickImage.dart';
@@ -41,6 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isRecommended = false;
   var userData;
   List recommend = [];
+  bool uidExists = false;
 
   @override
   void initState() {
@@ -57,6 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     getIsFollowing();
     getIsRecommended();
     colorData();
+    checkIfUidExists(FirebaseAuth.instance.currentUser!.uid);
   }
 
   bool isLoading = false;
@@ -70,6 +73,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (followers.contains(FirebaseAuth.instance.currentUser!.uid)) {
       setState(() {
         isFollowing = true;
+      });
+    }
+  }
+
+  checkIfUidExists(String uid) async {
+    try {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('uid', isEqualTo: uid)
+          .limit(1)
+          .get();
+      print(snapshot.docs);
+      setState(() {
+        uidExists = snapshot.docs.isNotEmpty;
+      });
+    } catch (error) {
+      // Handle the error appropriately
+      print('Error checking UID existence: $error');
+      setState(() {
+        uidExists = false;
       });
     }
   }
@@ -112,6 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     Uint8List? _file;
+    print(uidExists);
 
     return GetBuilder<ProfileController>(
         builder: (controller) => controller.user.isEmpty
@@ -153,20 +177,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     borderRadius: BorderRadius.circular(50),
                                     child: InkWell(
                                       onTap: () {
-                                        !isUser
-                                            ? Get.bottomSheet(
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  child: Container(
-                                                    height: 200,
-                                                    color: Colors.white,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        TextButton(
+                                        Get.bottomSheet(
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: Container(
+                                              height: 200,
+                                              color: Colors.white,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  !isUser
+                                                      ? TextButton(
                                                           onPressed: () async {
                                                             Navigator.of(
                                                                     context)
@@ -206,8 +229,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                             fontWeight:
                                                                 FontWeight.w400,
                                                           )),
-                                                        ),
-                                                        TextButton(
+                                                        )
+                                                      : Text(''),
+                                                  !isUser
+                                                      ? TextButton(
                                                           onPressed: () async {
                                                             Navigator.of(
                                                                     context)
@@ -247,76 +272,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                             fontWeight:
                                                                 FontWeight.w400,
                                                           )),
-                                                        ),
-                                                        TextButton(
-                                                          onPressed: () {
-                                                            Get.to(() => PhotoViewScreen(
-                                                                image: controller
-                                                                        .user[
-                                                                    'profilePhoto'],
-                                                                uid: uid));
-                                                          },
-                                                          child: Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            width:
-                                                                MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                            child: Text(
-                                                              "View Image",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black),
-                                                            ),
-                                                          ),
-                                                          style: TextButton
-                                                              .styleFrom(
-                                                                  textStyle:
-                                                                      const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                          )),
-                                                        ),
-                                                        TextButton(
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          child: Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            width:
-                                                                MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                            child: Text(
-                                                              "X Cancel",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .red),
-                                                            ),
-                                                          ),
-                                                          style: TextButton
-                                                              .styleFrom(
-                                                                  textStyle:
-                                                                      const TextStyle(
-                                                            color: Colors.red,
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                          )),
-                                                        ),
-                                                      ],
+                                                        )
+                                                      : Text(''),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Get.to(() =>
+                                                          PhotoViewScreen(
+                                                              image: controller
+                                                                      .user[
+                                                                  'profilePhoto'],
+                                                              uid: uid));
+                                                    },
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: Text(
+                                                        "View Image",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
+                                                      ),
                                                     ),
+                                                    style: TextButton.styleFrom(
+                                                        textStyle:
+                                                            const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    )),
                                                   ),
-                                                ),
-                                              )
-                                            : Text('');
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: Text(
+                                                        "X Cancel",
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      ),
+                                                    ),
+                                                    style: TextButton.styleFrom(
+                                                        textStyle:
+                                                            const TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    )),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
                                       },
                                       child: ProfilePictureWidget(uid: uid),
                                     ),
@@ -533,28 +553,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               isFollowing = !isFollowing;
                                             });
                                           },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 10,
-                                            ),
-                                            child: isFollowing
-                                                ? Text(
-                                                    'Unfollow',
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                  )
-                                                : Text(
-                                                    'Follow',
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
+                                          child: uidExists
+                                              ? Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                    vertical: 10,
                                                   ),
-                                          ),
+                                                  child: isFollowing
+                                                      ? Text(
+                                                          'Unfollow',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
+                                                        )
+                                                      : Text(
+                                                          'Follow',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                )
+                                              : Text(''),
                                         )
                                       : Text(''),
                                 ])),
@@ -708,7 +731,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           }
                                           // print(snapshot.data[0].data());
                                           List recommendData = snapshot.data;
-                                          print(recommendData[0].data());
 
                                           // return Container();
                                           return Column(

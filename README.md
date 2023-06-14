@@ -1,16 +1,9 @@
 # final_project_workconnect
 
-A new Flutter project.
+The project is a mobile-based project which will be created using Flutter on the front end while using Firebase on the back end. The main purpose of the system is to build an Online Business and Job searching system which creates an environment for both Job Seekers and Employees.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Clone the following command on your terminal:
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System.git

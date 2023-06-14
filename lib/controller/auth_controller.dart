@@ -188,6 +188,7 @@ class AuthController extends GetxController {
             uid: cred.user!.uid,
             type: 'employer',
             orgNameSubstring: orgNameSubstring,
+            followers: [],
           );
 
           await FirebaseFirestore.instance

@@ -13,18 +13,23 @@ class Business {
   String? uid;
   String? type;
   List? orgNameSubstring;
+  List? followers;
+  List? following;
 
-  Business(
-      {this.email,
-      this.orgName,
-      this.password,
-      this.phoneNo,
-      this.jobCategory,
-      this.jobDesc,
-      this.profilePhoto,
-      this.uid,
-      this.type,
-      this.orgNameSubstring});
+  Business({
+    this.email,
+    this.orgName,
+    this.password,
+    this.phoneNo,
+    this.jobCategory,
+    this.jobDesc,
+    this.profilePhoto,
+    this.uid,
+    this.type,
+    this.orgNameSubstring,
+    this.followers,
+    this.following,
+  });
 
   Business copyWith({
     String? email,
@@ -61,6 +66,8 @@ class Business {
       'uid': uid,
       'type': type,
       'orgNameSubstring': orgNameSubstring,
+      'followers': followers,
+      'following': following,
     };
   }
 
