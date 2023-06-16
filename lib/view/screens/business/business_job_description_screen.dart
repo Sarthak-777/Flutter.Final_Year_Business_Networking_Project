@@ -22,7 +22,6 @@ class BusinessJobDescriptionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     JobPostingsController controller = Get.put(JobPostingsController());
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Job Details'),

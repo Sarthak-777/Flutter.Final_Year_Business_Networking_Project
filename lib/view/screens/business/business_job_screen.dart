@@ -332,9 +332,6 @@ class _BusinessJobScreenState extends State<BusinessJobScreen> {
                   ),
                 ),
                 onPressed: () async {
-                  setState(() {
-                    skillController.clearSkillData();
-                  });
                   controller.addJobsToDB(
                     _titleController.text,
                     _aboutController.text,
@@ -353,6 +350,9 @@ class _BusinessJobScreenState extends State<BusinessJobScreen> {
                   _experienceController.clear();
                   val = jobTime[0];
                   type = jobType[0];
+                  setState(() {
+                    skillController.clearSkillData();
+                  });
                 },
               ),
             ],

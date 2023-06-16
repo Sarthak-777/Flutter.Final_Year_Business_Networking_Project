@@ -656,7 +656,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           snapshot.data.data()['jobDesc'];
                                       return DescriptionTextWidget(
                                         text: description == ""
-                                            ? 'No user descriptio  // print(snapshot.data[0].data());n yet'
+                                            ? 'No user description'
                                             : description,
                                       );
                                     },

@@ -17,7 +17,7 @@ class JobDescriptionScreen extends StatefulWidget {
   JobDescriptionScreen({
     Key? key,
     required this.data,
-    required this.color,
+    this.color = '',
   }) : super(key: key);
 
   @override
@@ -30,7 +30,7 @@ class _JobDescriptionScreenState extends State<JobDescriptionScreen> {
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
     bool expired = isExpired(widget.data['expiryDate'].toDate());
-    print(expired);
+    print(widget.color);
 
     return Scaffold(
         appBar: AppBar(
@@ -66,7 +66,7 @@ class _JobDescriptionScreenState extends State<JobDescriptionScreen> {
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
                             color: widget.color == ''
-                                ? Colors.red[600]
+                                ? Colors.grey[800]
                                 : toColor(widget.color),
                             // height: 100,
                             child: Padding(

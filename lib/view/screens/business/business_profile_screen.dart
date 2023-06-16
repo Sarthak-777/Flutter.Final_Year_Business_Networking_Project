@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
@@ -14,6 +15,7 @@ import 'package:final_project_workconnect/model/business.dart';
 import 'package:final_project_workconnect/view/screens/business/business_customize_profile.dart';
 import 'package:final_project_workconnect/view/screens/business/business_photo_view_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/edit_profile_screen.dart';
+import 'package:final_project_workconnect/view/screens/user/job_description_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/photo_view_screen.dart';
 import 'package:final_project_workconnect/view/widgets/descriptionTextWidget.dart';
 import 'package:final_project_workconnect/view/widgets/experienceWidget.dart';
@@ -24,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:intl/intl.dart';
 
 class BusinessProfileScreen extends StatefulWidget {
   String? uid;
@@ -477,13 +480,15 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                               ),
                             ),
                             // const SizedBox(width: 100),
-                            InkWell(
-                              onTap: () => authController.signOut(),
-                              child: Icon(
-                                Icons.logout_outlined,
-                                color: Colors.blueGrey[100],
-                              ),
-                            ),
+                            !isUser
+                                ? InkWell(
+                                    onTap: () => authController.signOut(),
+                                    child: Icon(
+                                      Icons.logout_outlined,
+                                      color: Colors.blueGrey[100],
+                                    ),
+                                  )
+                                : Container(),
                           ],
                         ),
                       ),
@@ -524,42 +529,143 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                             const SizedBox(
                               height: 20,
                             ),
-                            // Column(
-                            //   crossAxisAlignment: CrossAxisAlignment.start,
-                            //   children: [
-                            //     Padding(
-                            //       padding: const EdgeInsets.symmetric(
-                            //           horizontal: 30),
-                            //       child: Text("Skills",
-                            //           style: TextStyle(
-                            //               fontSize: 18,
-                            //               fontWeight: FontWeight.w800,
-                            //               color: iconBool
-                            //                   ? Colors.grey[200]
-                            //                   : Colors.black)),
-                            //     ),
-                            //     const SizedBox(height: 10),
-                            //     Padding(
-                            //       padding:
-                            //           const EdgeInsets.symmetric(horizontal: 5),
-                            //       child: SizedBox(
-                            //         height: 40,
-                            //         width: 500,
-                            //         child: ListView(
-                            //           scrollDirection: Axis.horizontal,
-                            //           children: [
-                            //             skillsWidget(
-                            //               uid: uid,
-                            //             ),
-                            //           ],
-                            //         ),
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
-                            // const SizedBox(
-                            //   height: 20,
-                            // ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 30,
+                              ),
+                              child: Text(
+                                "Jobs",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                    color: iconBool
+                                        ? Colors.grey[200]
+                                        : Colors.black),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 30,
+                              ),
+                              child: StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('jobs')
+                                      .where('uid', isEqualTo: uid)
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Text("Loading...");
+                                    }
+                                    var data = (snapshot.data! as dynamic).docs;
+                                    if (data.isEmpty) {
+                                      return Text('No Jobs Posted');
+                                    }
+                                    if (snapshot.hasData) {
+                                      return Column(
+                                        children: [
+                                          for (int i = 0; i < data.length; i++)
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  Get.to(() =>
+                                                      JobDescriptionScreen(
+                                                          data: data[i].data(),
+                                                          color: ''));
+                                                },
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          data[i].data()[
+                                                              'jobTitle'],
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            fontSize: 14,
+                                                            color: Colors
+                                                                .grey[200],
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          data[i].data()[
+                                                              'username'],
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w300,
+                                                            fontSize: 14,
+                                                            color: Colors
+                                                                .grey[200],
+                                                          ),
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                              data[i].data()[
+                                                                  'jobType'],
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300,
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .grey[200],
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 20),
+                                                            Text(
+                                                              data[i].data()[
+                                                                  'jobTime'],
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300,
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .grey[200],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Text(
+                                                      'view',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        fontSize: 14,
+                                                        color: Colors.grey[200],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                        ],
+                                      );
+                                    } else {
+                                      return Text('No Jobs Posted');
+                                    }
+                                  }),
+                            ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
