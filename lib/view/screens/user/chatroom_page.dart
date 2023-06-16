@@ -125,9 +125,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                         color: (currentMessage.sender ==
                                                 widget.userModel!.uid)
                                             ? Colors.grey
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
+                                            : Colors.blueGrey[800],
                                         borderRadius: BorderRadius.circular(5),
                                       ),
                                       child: Text(
@@ -161,7 +159,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               ),
 
               Container(
-                color: Colors.grey[200],
+                color: Colors.blueGrey[800],
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                 child: Row(
                   children: [
@@ -180,7 +178,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       },
                       icon: Icon(
                         Icons.send,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Colors.grey[200],
                       ),
                     ),
                   ],

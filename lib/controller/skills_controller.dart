@@ -40,16 +40,19 @@ class SkillController extends GetxController {
     }
   }
 
+  clearSkillData() {
+    skillData = [].obs;
+    userSkills = [].obs;
+  }
+
   setSkillData() {
     skillData.value = data;
 
-    print(skillData);
     update();
   }
 
   addSkillsData(String data) {
     userSkills.add(data);
-    print(userSkills);
   }
 
   removeSkillFromList(int num) {

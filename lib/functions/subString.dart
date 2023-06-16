@@ -3,7 +3,9 @@ List createSubString(String data) {
   List<String> result = [];
 
   for (int i = 1; i <= input.length; i++) {
-    result.add(input.substring(0, i));
+    String substring = input.substring(0, i);
+    result.add(substring.toLowerCase());
+    result.add(substring.toUpperCase());
   }
 
   return result;

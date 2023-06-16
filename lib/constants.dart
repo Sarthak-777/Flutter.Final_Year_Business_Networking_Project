@@ -35,6 +35,21 @@ List<String> jobType = [
   'Physical',
 ];
 
+List jobDuration = [
+  {
+    "name": '1 week',
+    "duration": 7,
+  },
+  {
+    "name": '2 weeks',
+    "duration": 14,
+  },
+  {
+    "name": '3 weeks',
+    "duration": 21,
+  }
+];
+
 List<String> Date = [
   '2001',
   '2002',

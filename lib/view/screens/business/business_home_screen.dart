@@ -46,6 +46,7 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
   @override
   Widget build(BuildContext context) {
     getBusinessInfo();
+    List values = [];
 
     return Scaffold(
         body: StreamBuilder<QuerySnapshot>(
@@ -57,7 +58,6 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Text("Loading...");
               }
-              List values = [];
               var result = snapshot.data!.docs;
 
               // result.forEach((data) =>
@@ -122,25 +122,25 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
                               color: iconBool ? Colors.white : Colors.black,
                             ),
                           ),
-                          Column(children: [
-                            IconButton(
-                              color: iconBool ? Colors.white : kPrimaryColor,
-                              onPressed: () {
-                                themeController.changeTheme();
-                                setState(() {
-                                  iconBool = !iconBool;
-                                });
-                                if (iconBool == true) {
-                                  Get.changeTheme(darkTheme);
-                                } else {
-                                  Get.changeTheme(lightTheme);
-                                }
-                              },
-                              icon: Icon(
-                                iconBool ? iconDark : iconLight,
-                              ),
-                            ),
-                          ]),
+                          // Column(children: [
+                          //   IconButton(
+                          //     color: iconBool ? Colors.white : kPrimaryColor,
+                          //     onPressed: () {
+                          //       themeController.changeTheme();
+                          //       setState(() {
+                          //         iconBool = !iconBool;
+                          //       });
+                          //       if (iconBool == true) {
+                          //         Get.changeTheme(darkTheme);
+                          //       } else {
+                          //         Get.changeTheme(lightTheme);
+                          //       }
+                          //     },
+                          //     icon: Icon(
+                          //       iconBool ? iconDark : iconLight,
+                          //     ),
+                          //   ),
+                          // ]),
                         ],
                       ),
                     ),

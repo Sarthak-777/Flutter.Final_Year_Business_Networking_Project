@@ -171,45 +171,61 @@ class AuthController extends GetxController {
           password.isNotEmpty &&
           jobCategory.isNotEmpty) {
         try {
-          UserCredential cred = await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(email: email, password: password);
-          cred.user!.updateDisplayName('employer');
-          List orgNameSubstring = createSubString(orgName);
+          String pattern = r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$';
+          RegExp emailRegex = RegExp(pattern);
+          RegExp regex = RegExp(
+              r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+          if (!regex.hasMatch(password)) {
+            Get.snackbar("Error",
+                "Password should atlease have 1 capital letter, a symbol and a number. Please try again",
+                colorText: Colors.black, backgroundColor: Colors.white);
+          } else if (!emailRegex.hasMatch(email)) {
+            Get.snackbar("Error", "Please enter valid email address",
+                colorText: Colors.black, backgroundColor: Colors.white);
+          } else {
+            UserCredential cred = await FirebaseAuth.instance
+                .createUserWithEmailAndPassword(
+                    email: email, password: password);
+            cred.user!.updateDisplayName('employer');
+            List orgNameSubstring = createSubString(orgName);
 
-          Business business = Business(
-            email: email,
-            orgName: orgName,
-            password: password,
-            phoneNo: phoneNo,
-            jobCategory: jobCategory,
-            jobDesc: '',
-            profilePhoto:
-                'https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System/blob/main/assets/person.jpg?raw=true',
-            uid: cred.user!.uid,
-            type: 'employer',
-            orgNameSubstring: orgNameSubstring,
-            followers: [],
-          );
+            Business business = Business(
+              email: email,
+              orgName: orgName,
+              password: password,
+              phoneNo: phoneNo,
+              jobCategory: jobCategory,
+              jobDesc: '',
+              profilePhoto:
+                  'https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System/blob/main/assets/person.jpg?raw=true',
+              uid: cred.user!.uid,
+              type: 'employer',
+              orgNameSubstring: orgNameSubstring,
+              followers: [],
+            );
 
-          await FirebaseFirestore.instance
-              .collection('business')
-              .doc(cred.user!.uid)
-              .set(business.toMap());
-          await FirebaseFirestore.instance
-              .collection('email')
-              .doc(email)
-              .set({"email": email});
-          Get.offAll(() => LandingScreen());
+            await FirebaseFirestore.instance
+                .collection('business')
+                .doc(cred.user!.uid)
+                .set(business.toMap());
+            await FirebaseFirestore.instance
+                .collection('email')
+                .doc(email)
+                .set({"email": email});
+            Get.offAll(() => LandingScreen());
+          }
 
           // Get.to(VerifyScreen());
         } on FirebaseAuthException catch (e) {
           Get.snackbar("Error", e.code);
         }
       } else {
-        Get.snackbar("Error", "Please enter all the required data");
+        Get.snackbar("Error", "Please enter all the required data",
+            colorText: Colors.black, backgroundColor: Colors.white);
       }
     } catch (e) {
-      Get.snackbar("Error Creating Account", "Check your credentials");
+      Get.snackbar("Error Creating Account", "Check your credentials",
+          colorText: Colors.black, backgroundColor: Colors.white);
       log(e.toString());
     }
   }

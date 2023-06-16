@@ -35,36 +35,15 @@ class _BusinessJobScreenState extends State<BusinessJobScreen> {
 
   late String val = jobTime[0];
   late String type = jobType[0];
+  late int duration = jobDuration[0]['duration'];
 
   @override
   Widget build(BuildContext context) {
-    print(skillController.userSkills);
+    // print()
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Create Job "),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          controller.addJobsToDB(
-            _titleController.text,
-            _aboutController.text,
-            _responsibilityController.text,
-            _experienceController.text,
-            val,
-            type,
-            skillController.userSkills,
-            authController.userData['orgName'],
-            authController.userData['uid'],
-          );
-          _titleController.clear();
-          _aboutController.clear();
-          _responsibilityController.clear();
-          _experienceController.clear();
-          val = jobTime[0];
-          type = jobType[0];
-        },
-        label: Text("Complete"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -141,7 +120,7 @@ class _BusinessJobScreenState extends State<BusinessJobScreen> {
                     )),
               ),
               const SizedBox(
-                height: 10,
+                height: 20,
               ),
               Text('Job Time',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
@@ -168,6 +147,9 @@ class _BusinessJobScreenState extends State<BusinessJobScreen> {
                       )),
                 ],
               ),
+              const SizedBox(
+                height: 20,
+              ),
               Text('Job Type',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
               Row(
@@ -192,6 +174,37 @@ class _BusinessJobScreenState extends State<BusinessJobScreen> {
                         },
                       )),
                 ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text('Job Posting duration',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
+              Row(
+                children: [
+                  const Icon(Icons.work_history_outlined),
+                  const SizedBox(width: 15),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: DropdownButton<int>(
+                      value: duration,
+                      items: jobDuration.map((duration) {
+                        return DropdownMenuItem<int>(
+                          value: duration['duration'],
+                          child: Text(duration['name']),
+                        );
+                      }).toList(),
+                      onChanged: (int? newValue) {
+                        setState(() {
+                          duration = newValue!;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
               ),
               Text(
                 'Select Skills',
@@ -299,10 +312,48 @@ class _BusinessJobScreenState extends State<BusinessJobScreen> {
                             ),
                           ),
                         )
-                      : isLoading == true
-                          ? CircularProgressIndicator()
-                          : SizedBox()),
+                      : SizedBox()),
                 ],
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary:
+                      Colors.blueGrey[400], // Set the desired button color here
+                ),
+                child: Container(
+                  height: 45,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Text(
+                      'Post Job',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                onPressed: () async {
+                  setState(() {
+                    skillController.clearSkillData();
+                  });
+                  controller.addJobsToDB(
+                    _titleController.text,
+                    _aboutController.text,
+                    _responsibilityController.text,
+                    _experienceController.text,
+                    val,
+                    type,
+                    skillController.userSkills,
+                    authController.userData['orgName'],
+                    authController.userData['uid'],
+                    DateTime.now().add(Duration(days: duration)),
+                  );
+                  _titleController.clear();
+                  _aboutController.clear();
+                  _responsibilityController.clear();
+                  _experienceController.clear();
+                  val = jobTime[0];
+                  type = jobType[0];
+                },
               ),
             ],
           ),

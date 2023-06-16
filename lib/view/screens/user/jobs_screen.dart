@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project_workconnect/constants.dart';
 import 'package:final_project_workconnect/controller/auth_controller.dart';
 import 'package:final_project_workconnect/controller/job_controller.dart';
@@ -7,6 +8,7 @@ import 'package:final_project_workconnect/functions/toColor.dart';
 import 'package:final_project_workconnect/view/screens/user/job_description_screen.dart';
 import 'package:final_project_workconnect/view/widgets/jobSkillWidget.dart';
 import 'package:final_project_workconnect/view/widgets/skillsWidget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -31,9 +33,7 @@ class _JobsScreenState extends State<JobsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print(authController.userData);
-    print(jobController.skillList);
-
+    print(authController.userData['skills']);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -59,19 +59,40 @@ class _JobsScreenState extends State<JobsScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  SizedBox(
-                    height: 40,
-                    width: 500,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        jobSkillWidget(
-                          uid: authController.userData['uid'],
-                          color: authController.userData['color'],
-                        )
-                      ],
-                    ),
-                  ),
+                  StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Text("Loading...");
+                        }
+                        List skills = (snapshot.data as dynamic)['skills'];
+
+                        return skills.isEmpty
+                            ? Container(
+                                child: Text(
+                                    'Please add Skills in Profile to filter jobs',
+                                    style: TextStyle(
+                                        color: Colors.grey[200],
+                                        fontWeight: FontWeight.w600)),
+                              )
+                            : SizedBox(
+                                height: 40,
+                                width: 500,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: [
+                                    jobSkillWidget(
+                                      uid: (snapshot.data as dynamic)['uid'],
+                                      color: authController.userData['color'],
+                                    )
+                                  ],
+                                ),
+                              );
+                      }),
                 ],
               ),
             ),

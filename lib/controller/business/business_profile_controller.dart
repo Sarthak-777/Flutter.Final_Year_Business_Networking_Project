@@ -26,6 +26,7 @@ class BusinessController extends GetxController {
         .doc(_uid.value)
         .get();
     final businessData = businessDoc.data() as dynamic;
+
     String orgName = businessDoc['orgName'];
     String jobCategory = businessDoc['jobCategory'];
     String profilePhoto = businessDoc['profilePhoto'];

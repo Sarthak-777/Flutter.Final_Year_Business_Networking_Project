@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:final_project_workconnect/functions/checkValidEmail.dart';
+import 'package:final_project_workconnect/functions/validatePhone.dart';
+
 import 'package:final_project_workconnect/functions/sendEmail.dart';
 import 'package:final_project_workconnect/functions/sendNotification.dart';
 import 'package:final_project_workconnect/view/screens/user/jobs_screen.dart';
@@ -37,7 +39,7 @@ class _ApplyJobsScreenState extends State<ApplyJobsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(result);
+    // print(File(result!.files.single.path!));
     return Scaffold(
       appBar: AppBar(
         title: Text("Apply Job"),
@@ -143,7 +145,7 @@ class _ApplyJobsScreenState extends State<ApplyJobsScreen> {
             TextInputWidget(
                 controller: _usernameController,
                 myIcon: Icons.verified_user,
-                myLabelText: "Enter Username"),
+                myLabelText: "Enter Full Name"),
             const SizedBox(
               height: 20,
             ),
@@ -183,25 +185,32 @@ class _ApplyJobsScreenState extends State<ApplyJobsScreen> {
                       _usernameController.text.isNotEmpty &&
                       _summaryController.text.isNotEmpty) {
                     if (validEmail(_emailController.text)) {
-                      File file = File(result!.files.single.path!);
-                      await sendEmail(
-                          name: _usernameController.text,
-                          email: _emailController.text,
-                          subject: "Job Application Sent",
-                          message:
-                              "Thank you for using workconnect. Your application has been sent");
-                      jobController.applyJob(
-                          FirebaseAuth.instance.currentUser!.uid,
-                          _usernameController.text,
-                          file,
-                          _phoneController.text,
-                          _emailController.text,
-                          _summaryController.text,
-                          widget.jobId);
-                      sendNotification(FirebaseAuth.instance.currentUser!.uid,
-                          'You have applied for the job ${widget.jobName}');
-                      Get.snackbar("success", "Applied for Job");
-                      Get.off(() => JobsScreen());
+                      if (validatePhoneNumber(_phoneController.text)) {
+                        File file = File(result!.files.single.path!);
+                        await sendEmail(
+                            name: _usernameController.text,
+                            email: _emailController.text,
+                            subject: "Job Application Sent",
+                            message:
+                                "Thank you for using workconnect. Your application has been sent");
+                        jobController.applyJob(
+                            FirebaseAuth.instance.currentUser!.uid,
+                            _usernameController.text,
+                            file,
+                            _phoneController.text,
+                            _emailController.text,
+                            _summaryController.text,
+                            widget.jobId);
+                        sendNotification(FirebaseAuth.instance.currentUser!.uid,
+                            'You have applied for the job ${widget.jobName}');
+                        Get.snackbar("success", "Applied for Job");
+                        Get.off(() => JobsScreen());
+                      } else {
+                        Get.snackbar("Error",
+                            "Please enter a valid 10-digit phone number",
+                            backgroundColor: Colors.white,
+                            colorText: Colors.black);
+                      }
                     } else {
                       Get.snackbar("Error", "Please enter valid email address",
                           backgroundColor: Colors.white,

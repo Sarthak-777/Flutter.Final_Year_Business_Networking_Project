@@ -5,6 +5,8 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:uuid/uuid.dart';
+import 'package:email_validator/email_validator.dart';
 
 class ResumeForm extends StatefulWidget {
   @override
@@ -13,11 +15,12 @@ class ResumeForm extends StatefulWidget {
 
 class _ResumeFormState extends State<ResumeForm> {
   final _formKey = GlobalKey<FormState>();
+  String id = const Uuid().v1();
 
   // Declare variables to hold user inputs
   late String? _name;
   late String? _email;
-  late String? _phone;
+  late int? _phone;
   late String? _education;
   late String? _workExperience;
   late String? _skills;
@@ -77,8 +80,10 @@ class _ResumeFormState extends State<ResumeForm> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter your email';
+                  } else if (!EmailValidator.validate(value)) {
+                    return 'Please enter a valid email address';
                   }
-                  return null;
+                  return null; // No validation error
                 },
                 onSaved: (value) {
                   _email = value;
@@ -88,15 +93,23 @@ class _ResumeFormState extends State<ResumeForm> {
                 decoration: InputDecoration(
                   labelText: 'Phone Number',
                 ),
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter your phone number';
+                  } else if (value.length != 10) {
+                    return 'Phone number should be 10 digits';
+                  } else {
+                    try {
+                      _phone = int.parse(
+                          value); // Convert the input value to an integer
+                      return null; // No validation error
+                    } catch (e) {
+                      return 'Invalid phone number';
+                    }
                   }
-                  return null;
                 },
-                onSaved: (value) {
-                  _phone = value;
-                },
+                onSaved: (value) {},
               ),
               TextFormField(
                 decoration: InputDecoration(
@@ -179,7 +192,7 @@ class _ResumeFormState extends State<ResumeForm> {
                     fontSize: 20.0, fontWeight: pw.FontWeight.bold)),
             pw.SizedBox(height: 10.0),
             pw.Text(_email!),
-            pw.Text(_phone!),
+            pw.Text(_phone.toString()!),
             pw.SizedBox(height: 20.0),
             pw.Text('Education',
                 style: pw.TextStyle(
@@ -205,7 +218,7 @@ class _ResumeFormState extends State<ResumeForm> {
 
 // Get the document directory path on the device
     final directory = await getApplicationDocumentsDirectory();
-    final path = '/storage/emulated/0/Download/cv.pdf';
+    final path = '/storage/emulated/0/Download/${id}.pdf';
 
 // Save the PDF file to the device
     final file = File(path);

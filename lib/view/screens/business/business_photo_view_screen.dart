@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 
-class PhotoViewScreen extends StatelessWidget {
+class BusinessPhotoViewScreen extends StatelessWidget {
   String image;
   String? uid;
 
-  PhotoViewScreen({super.key, required this.image, required this.uid});
+  BusinessPhotoViewScreen({super.key, required this.image, required this.uid});
 
   ProfileController profileController = Get.put(ProfileController());
 
@@ -21,7 +21,7 @@ class PhotoViewScreen extends StatelessWidget {
           elevation: 0,
         ),
         body: FutureBuilder(
-          future: profileController.getUserImage(uid),
+          future: profileController.getBusinessUserImage(uid),
           builder: (context, snapshot) {
             print(snapshot.data);
             if (snapshot.connectionState == ConnectionState.waiting) {

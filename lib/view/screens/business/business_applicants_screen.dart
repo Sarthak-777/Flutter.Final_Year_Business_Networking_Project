@@ -41,7 +41,6 @@ class BusinessApplicantScreen extends StatelessWidget {
               itemBuilder: (context, index) => InkWell(
                 onTap: () {},
                 child: SizedBox(
-                    height: 200,
                     width: MediaQuery.of(context).size.width,
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),

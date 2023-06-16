@@ -84,7 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .where('uid', isEqualTo: uid)
           .limit(1)
           .get();
-      print(snapshot.docs);
+
       setState(() {
         uidExists = snapshot.docs.isNotEmpty;
       });
@@ -102,6 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var data =
         await FirebaseFirestore.instance.collection("users").doc(uid).get();
     recommend = data.data()!['recommendation'];
+    print(recommend);
 
     if (recommend.contains(FirebaseAuth.instance.currentUser!.uid)) {
       setState(() {
@@ -135,7 +136,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     Uint8List? _file;
-    print(uidExists);
 
     return GetBuilder<ProfileController>(
         builder: (controller) => controller.user.isEmpty
@@ -344,13 +344,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Text(
-                                    controller.user['username'],
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      color: Colors.blueGrey[100],
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                  StreamBuilder(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(uid)
+                                        .snapshots(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      String username =
+                                          snapshot.data.data()['username'];
+                                      return Text(
+                                        username,
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          color: Colors.blueGrey[100],
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      );
+                                    },
                                   ),
                                   const SizedBox(
                                     height: 6,
@@ -622,10 +639,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             : Colors.black),
                                   ),
                                   const SizedBox(height: 10),
-                                  DescriptionTextWidget(
-                                    text: controller.user['jobDesc'] == ""
-                                        ? 'No user description yet'
-                                        : controller.user['jobDesc'],
+                                  StreamBuilder(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(uid)
+                                        .snapshots(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      String description =
+                                          snapshot.data.data()['jobDesc'];
+                                      return DescriptionTextWidget(
+                                        text: description == ""
+                                            ? 'No user descriptio  // print(snapshot.data[0].data());n yet'
+                                            : description,
+                                      );
+                                    },
                                   ),
                                 ],
                               ),
@@ -729,13 +763,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   CircularProgressIndicator(),
                                             );
                                           }
-                                          // print(snapshot.data[0].data());
+
                                           List recommendData = snapshot.data;
 
-                                          // return Container();
                                           return Column(
                                             children: [
                                               ListView.builder(
+                                                padding: EdgeInsets.all(0),
                                                 shrinkWrap: true,
                                                 itemCount: recommendData.length,
                                                 itemBuilder:
@@ -744,7 +778,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   var item =
                                                       recommendData[index]
                                                           .data();
-                                                  print(item);
+
                                                   String title =
                                                       item['username'] != null
                                                           ? item['username']

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class BusinessJobDescriptionScreen extends StatelessWidget {
   var data;
@@ -107,7 +108,39 @@ class BusinessJobDescriptionScreen extends StatelessWidget {
                                 ),
                               ),
                             ],
-                          )
+                          ),
+                          const SizedBox(height: 15),
+                          Row(children: [
+                            Text('Job Added Date: ',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.green[400])),
+                            Text(
+                                DateFormat.yMMMd().format(
+                                  data['addDate'].toDate(),
+                                ),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey[200])),
+                          ]),
+                          const SizedBox(height: 5),
+                          Row(children: [
+                            Text('Job Expiry Date: ',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.red[400])),
+                            Text(
+                                DateFormat.yMMMd().format(
+                                  data['expiryDate'].toDate(),
+                                ),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey[200])),
+                          ]),
                         ]),
                   ),
                 ),

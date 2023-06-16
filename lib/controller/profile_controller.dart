@@ -88,4 +88,14 @@ class ProfileController extends GetxController {
     print(userImage);
     return userImage;
   }
+
+  Future<String?> getBusinessUserImage(String? uid) async {
+    var userDoc =
+        await FirebaseFirestore.instance.collection('business').doc(uid).get();
+    var userData = userDoc.data();
+    print(userData);
+    String userImage = userDoc['profilePhoto'];
+    print(userImage);
+    return userImage;
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project_workconnect/view/screens/user/skills_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -51,23 +52,25 @@ class skillsWidget extends StatelessWidget {
                           ),
                         ),
                       ],
-                      InkWell(
-                        onTap: () {
-                          Get.to(() => SkillsScreen());
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            color: Colors.blueGrey[300],
-                            padding: EdgeInsets.all(10),
-                            child: Text(" + ",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ),
-                        ),
-                      ),
+                      uid == FirebaseAuth.instance.currentUser!.uid
+                          ? InkWell(
+                              onTap: () {
+                                Get.to(() => SkillsScreen());
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  color: Colors.blueGrey[300],
+                                  padding: EdgeInsets.all(10),
+                                  child: Text(" + ",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                ),
+                              ),
+                            )
+                          : Container(),
                     ],
                   );
                 }

@@ -13,22 +13,26 @@ class Job {
   String? username;
   String? uid;
   List? applicants;
-
+  DateTime? addDate;
+  DateTime? expiryDate;
   bool verified;
-  Job({
-    this.jobId,
-    this.jobTitle,
-    this.jobDesc,
-    this.jobResp,
-    this.jobExp,
-    this.jobTime,
-    this.jobType,
-    this.skills,
-    this.username,
-    this.verified = false,
-    this.uid,
-    this.applicants,
-  });
+  bool expired;
+  Job(
+      {this.jobId,
+      this.jobTitle,
+      this.jobDesc,
+      this.jobResp,
+      this.jobExp,
+      this.jobTime,
+      this.jobType,
+      this.skills,
+      this.username,
+      this.verified = false,
+      this.uid,
+      this.applicants,
+      this.addDate,
+      this.expiryDate,
+      this.expired = false});
 
   Map<String, dynamic> toJson() {
     return {
@@ -44,6 +48,9 @@ class Job {
       'username': username,
       'uid': uid,
       'applicants': applicants,
+      'addDate': addDate,
+      'expiryDate': expiryDate,
+      'expired': expired,
     };
   }
 }

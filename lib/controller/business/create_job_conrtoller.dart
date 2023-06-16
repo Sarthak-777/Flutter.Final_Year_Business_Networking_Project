@@ -8,16 +8,16 @@ import 'package:final_project_workconnect/model/job.dart';
 
 class CreateJobController extends GetxController {
   void addJobsToDB(
-    String jobTitle,
-    String jobDesc,
-    String jobResp,
-    String jobExp,
-    String jobTime,
-    String jobType,
-    List skills,
-    String username,
-    String uid,
-  ) async {
+      String jobTitle,
+      String jobDesc,
+      String jobResp,
+      String jobExp,
+      String jobTime,
+      String jobType,
+      List skills,
+      String username,
+      String uid,
+      DateTime expiryDate) async {
     if (jobTitle.isNotEmpty &&
         jobDesc.isNotEmpty &&
         jobResp.isNotEmpty &&
@@ -37,6 +37,8 @@ class CreateJobController extends GetxController {
         username: username,
         uid: uid,
         applicants: [],
+        addDate: DateTime.now(),
+        expiryDate: expiryDate,
       );
       await FirebaseFirestore.instance
           .collection('jobs')

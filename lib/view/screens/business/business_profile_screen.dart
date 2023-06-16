@@ -12,6 +12,7 @@ import 'package:final_project_workconnect/functions/pickImage.dart';
 import 'package:final_project_workconnect/functions/toColor.dart';
 import 'package:final_project_workconnect/model/business.dart';
 import 'package:final_project_workconnect/view/screens/business/business_customize_profile.dart';
+import 'package:final_project_workconnect/view/screens/business/business_photo_view_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/edit_profile_screen.dart';
 import 'package:final_project_workconnect/view/screens/user/photo_view_screen.dart';
 import 'package:final_project_workconnect/view/widgets/descriptionTextWidget.dart';
@@ -150,83 +151,96 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: [
-                                                  TextButton(
-                                                    onPressed: () async {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      XFile? pickedFile =
-                                                          await ImagePicker()
-                                                              .pickImage(
-                                                                  source:
-                                                                      ImageSource
-                                                                          .camera);
-                                                      if (pickedFile != null) {
-                                                        cropImage(pickedFile);
-                                                      }
-                                                    },
-                                                    child: Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      child: Text(
-                                                        "Upload from Camera,",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ),
-                                                    style: TextButton.styleFrom(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    )),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () async {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      XFile? pickedFile =
-                                                          await ImagePicker()
-                                                              .pickImage(
-                                                                  source: ImageSource
-                                                                      .gallery);
-                                                      if (pickedFile != null) {
-                                                        cropImage(pickedFile);
-                                                      }
-                                                    },
-                                                    child: Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      child: Text(
-                                                        "Upload from Gallery,",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ),
-                                                    style: TextButton.styleFrom(
-                                                        textStyle:
-                                                            const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    )),
-                                                  ),
+                                                  !isUser
+                                                      ? TextButton(
+                                                          onPressed: () async {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            XFile? pickedFile =
+                                                                await ImagePicker()
+                                                                    .pickImage(
+                                                                        source:
+                                                                            ImageSource.camera);
+                                                            if (pickedFile !=
+                                                                null) {
+                                                              cropImage(
+                                                                  pickedFile);
+                                                            }
+                                                          },
+                                                          child: Container(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            child: Text(
+                                                              "Upload from Camera,",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                          ),
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                                  textStyle:
+                                                                      const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          )),
+                                                        )
+                                                      : Container(),
+                                                  !isUser
+                                                      ? TextButton(
+                                                          onPressed: () async {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            XFile? pickedFile =
+                                                                await ImagePicker()
+                                                                    .pickImage(
+                                                                        source:
+                                                                            ImageSource.gallery);
+                                                            if (pickedFile !=
+                                                                null) {
+                                                              cropImage(
+                                                                  pickedFile);
+                                                            }
+                                                          },
+                                                          child: Container(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            width:
+                                                                MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                            child: Text(
+                                                              "Upload from Gallery,",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                          ),
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                                  textStyle:
+                                                                      const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          )),
+                                                        )
+                                                      : Container(),
                                                   TextButton(
                                                     onPressed: () {
                                                       Get.to(() =>
-                                                          PhotoViewScreen(
+                                                          BusinessPhotoViewScreen(
                                                               image: controller
                                                                       .business[
                                                                   'profilePhoto'],
@@ -358,14 +372,25 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                                         ),
                                       ),
                                       const SizedBox(width: 10),
-                                      Text(
-                                        '0',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.blueGrey[100],
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      )
+                                      controller.business['followers'].isEmpty
+                                          ? Text(
+                                              '0',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.blueGrey[100],
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            )
+                                          : Text(
+                                              controller
+                                                  .business['followers'].length
+                                                  .toString(),
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.blueGrey[100],
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
                                     ],
                                   ),
                                   isUser
