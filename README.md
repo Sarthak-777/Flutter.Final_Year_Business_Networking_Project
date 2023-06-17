@@ -46,6 +46,19 @@ The project is a mobile-based project which will be created using Flutter on the
 <span><img src = "https://img.shields.io/badge/-url__launcher%3A%20%5E6.1.11%3A%20%5E1.0.0-lightgrey" height="30"></span>
 <span><img src = "https://img.shields.io/badge/-permission__handler%3A%20%5E10.2.0-blue" height="30"></span>
 
+## Process Modeling
+
+Context Diagram
+![context diagram](https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System/blob/main/assets/context.png?raw=true)
+
+## Conteptual Modeling
+
+ER Diagram
+![ER-diagram](https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System/blob/main/assets/er-diagram.png?raw=true)
+
+Use-Case Diagram
+![Use-Case diagram](https://github.com/Sarthak-777/FInal_Project_flutter_Buness_Networking_System/blob/main/assets/Use-case.png?raw=true)
+
 ## Contributors
 
 [Sarthak Bajracharya](https://github.com/Sarthak-777)
