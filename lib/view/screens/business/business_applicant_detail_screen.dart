@@ -16,14 +16,12 @@ class ApplicantDetails extends StatelessWidget {
   var applicantData;
 
   String jobId;
-  String jobName;
-  String orgName;
-  ApplicantDetails(
-      {super.key,
-      required this.applicantData,
-      required this.jobId,
-      required this.jobName,
-      required this.orgName});
+
+  ApplicantDetails({
+    super.key,
+    required this.applicantData,
+    required this.jobId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +36,19 @@ class ApplicantDetails extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
+              Row(
+                children: [
+                  Text('Job Title: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                  Text(applicantData['jobName'],
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               Row(
                 children: [
                   Text('Applicant name: ',
@@ -168,6 +179,7 @@ class ApplicantDetails extends StatelessWidget {
                                         'summary': applicantData['summary'],
                                         'uid': applicantData['uid'],
                                         'username': applicantData['username'],
+                                        'jobName': applicantData['jobName']
                                       }
                                     ])
                                   });
@@ -184,11 +196,11 @@ class ApplicantDetails extends StatelessWidget {
                                         'summary': applicantData['summary'],
                                         'uid': applicantData['uid'],
                                         'username': applicantData['username'],
+                                        'jobName': applicantData['jobName']
                                       }
                                     ])
                                   });
-                                  sendNotification(applicantData['uid'],
-                                      "Your application has been acccepted for position ${jobName} on company ${orgName}");
+
                                   Get.snackbar("success", "Applicant Accepted");
                                   Get.to(() => LandingScreen());
                                 }
@@ -260,8 +272,7 @@ class ApplicantDetails extends StatelessWidget {
                                       }
                                     ])
                                   });
-                                  sendNotification(applicantData['uid'],
-                                      "Your application has been rejected for position ${jobName} on company ${orgName}");
+
                                   Get.snackbar("success", "Applicant Rejected");
                                   Get.to(() => LandingScreen());
                                 }

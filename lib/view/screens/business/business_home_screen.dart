@@ -5,6 +5,7 @@ import 'package:final_project_workconnect/controller/theme_controller.dart';
 import 'package:final_project_workconnect/model/FirebaseHelper.dart';
 import 'package:final_project_workconnect/model/business.dart';
 import 'package:final_project_workconnect/view/screens/business/auth/business_login_screen.dart';
+import 'package:final_project_workconnect/view/screens/business/business_status_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -24,6 +25,7 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
   ThemeController themeController = Get.put(ThemeController());
   User? currentBusiness;
   Business? thisBusinessModel;
+  List values = [];
 
   int pendingCount = 0;
   int acceptCount = 0;
@@ -33,20 +35,34 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
     currentBusiness = FirebaseAuth.instance.currentUser;
     thisBusinessModel =
         await FirebaseHelper.getBusinessModelById(currentBusiness!.uid);
-    print(currentBusiness!.uid);
   }
 
-  void getApplicantsDetail() async {
-    var data = await FirebaseFirestore.instance
+  Future<List> getApplicantsDetail(String val) async {
+    var snapshot = await FirebaseFirestore.instance
         .collection('jobs')
         .where("uid", isEqualTo: currentBusiness!.uid)
         .get();
+
+    List<Map<String, dynamic>> pendingApplicants = [];
+    for (var doc in snapshot.docs) {
+      var jobData = doc.data();
+      var applicants = jobData['applicants'];
+      var jobId = jobData['jobId'];
+
+      for (var applicant in applicants) {
+        if (applicant['status'] == val) {
+          applicant['jobId'] = jobId;
+          pendingApplicants.add(applicant);
+        }
+      }
+    }
+
+    return pendingApplicants;
   }
 
   @override
   Widget build(BuildContext context) {
     getBusinessInfo();
-    List values = [];
 
     return Scaffold(
         body: StreamBuilder<QuerySnapshot>(
@@ -64,6 +80,7 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
               //     values.add((data.data() as dynamic)['applicants']).);
               for (int i = 0; i < result.length; i++) {
                 var resultData = (result[i].data() as dynamic)['applicants'];
+
                 if (resultData.length == 1) {
                   values.add(resultData[0]);
                 }
@@ -151,79 +168,100 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
-                          child: Container(
-                              height: 120,
-                              width: 400,
-                              decoration: new BoxDecoration(
-                                borderRadius: new BorderRadius.circular(16.0),
-                                color: Colors.yellow[900],
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text("Pending Applicants",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700)),
-                                  SizedBox(height: 20),
-                                  Text(pendingCount.toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 22)),
-                                ],
-                              )),
+                          child: InkWell(
+                            onTap: () async {
+                              List data = await getApplicantsDetail('pending');
+
+                              Get.to(() => BusinessStatusScreen(data: data));
+                            },
+                            child: Container(
+                                height: 120,
+                                width: 400,
+                                decoration: new BoxDecoration(
+                                  borderRadius: new BorderRadius.circular(16.0),
+                                  color: Colors.yellow[900],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("Pending Applicants",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700)),
+                                    SizedBox(height: 20),
+                                    Text(pendingCount.toString(),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 22)),
+                                  ],
+                                )),
+                          ),
                         ),
                         const SizedBox(
                           width: 30,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: Container(
-                              height: 120,
-                              width: 400,
-                              decoration: new BoxDecoration(
-                                borderRadius: new BorderRadius.circular(16.0),
-                                color: Colors.green[900],
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text("Accepted Applicants",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700)),
-                                  SizedBox(height: 20),
-                                  Text(acceptCount.toString(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 22)),
-                                ],
-                              )),
+                        InkWell(
+                          onTap: () async {
+                            List data = await getApplicantsDetail('accepted');
+
+                            Get.to(() => BusinessStatusScreen(data: data));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: Container(
+                                height: 120,
+                                width: 400,
+                                decoration: new BoxDecoration(
+                                  borderRadius: new BorderRadius.circular(16.0),
+                                  color: Colors.green[900],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("Accepted Applicants",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700)),
+                                    SizedBox(height: 20),
+                                    Text(acceptCount.toString(),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 22)),
+                                  ],
+                                )),
+                          ),
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      child: Container(
-                          height: 120,
-                          width: 400,
-                          decoration: new BoxDecoration(
-                            borderRadius: new BorderRadius.circular(16.0),
-                            color: Colors.red[900],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Rejected Applicants",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.w700)),
-                              SizedBox(height: 20),
-                              Text(rejectCount.toString(),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 22)),
-                            ],
-                          )),
+                    InkWell(
+                      onTap: () async {
+                        List data = await getApplicantsDetail('rejected');
+
+                        Get.to(() => BusinessStatusScreen(data: data));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
+                        child: Container(
+                            height: 120,
+                            width: 400,
+                            decoration: new BoxDecoration(
+                              borderRadius: new BorderRadius.circular(16.0),
+                              color: Colors.red[900],
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Rejected Applicants",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w700)),
+                                SizedBox(height: 20),
+                                Text(rejectCount.toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 22)),
+                              ],
+                            )),
+                      ),
                     ),
                     const SizedBox(
                       width: 30,

@@ -200,7 +200,8 @@ class _ApplyJobsScreenState extends State<ApplyJobsScreen> {
                             _phoneController.text,
                             _emailController.text,
                             _summaryController.text,
-                            widget.jobId);
+                            widget.jobId,
+                            widget.jobName);
                         sendNotification(FirebaseAuth.instance.currentUser!.uid,
                             'You have applied for the job ${widget.jobName}');
                         Get.snackbar("success", "Applied for Job");

@@ -49,10 +49,9 @@ class BusinessApplicantScreen extends StatelessWidget {
                         child: InkWell(
                           onTap: () {
                             Get.to(() => ApplicantDetails(
-                                applicantData: data['applicants'][index],
-                                jobId: jobId,
-                                jobName: jobName,
-                                orgName: orgName));
+                                  applicantData: data['applicants'][index],
+                                  jobId: jobId,
+                                ));
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

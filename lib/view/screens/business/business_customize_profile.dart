@@ -46,6 +46,7 @@ class _EditBusinessProfileScreenState extends State<EditBusinessProfileScreen> {
                 onPressed: () {
                   controller.customizeDataFireabase(
                       businessDescriptionController.text);
+                  Get.back();
                 },
                 child: Container(
                   height: 45,

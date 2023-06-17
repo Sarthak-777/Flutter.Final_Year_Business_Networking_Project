@@ -36,7 +36,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
             TextInputWidget(
               controller: jobNameController,
               myIcon: Icons.person,
-              myLabelText: "Add your job Name",
+              myLabelText: "Add your Business Name",
             ),
             SizedBox(height: 20),
             TextInputWidget(
@@ -176,8 +176,8 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                             ]),
                           },
                         );
-                        Get.snackbar("success", "Job Add Success");
                         Get.back();
+                        Get.snackbar("success", "Job Add Success");
                       }
                     } else {
                       Get.snackbar("Error", "Please enter all the fields");

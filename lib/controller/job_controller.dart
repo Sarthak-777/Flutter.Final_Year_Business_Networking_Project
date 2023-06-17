@@ -64,7 +64,7 @@ class JobController extends GetxController {
   }
 
   applyJob(String uid, String username, File file, String phone, String email,
-      String summary, String jobId) async {
+      String summary, String jobId, String jobName) async {
     String fileUrl = await storeFile(file);
 
     await FirebaseFirestore.instance.collection("jobs").doc(jobId).update({
@@ -77,6 +77,7 @@ class JobController extends GetxController {
           'email': email,
           'summary': summary,
           'status': "pending",
+          "jobName": jobName
         }
       ])
     });
